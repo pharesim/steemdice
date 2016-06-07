@@ -79,7 +79,7 @@ var newBankState = function(data) {
           }
           bet = '<span class="betType">'+type+'</span> <span class="betNumber">'+escapeHtml(memo['number'])+'</span>';
           table.prepend(
-            '<tr id="bet'+tx[1]['block']+tx[1]['trx_in_block']+'"><td>'+
+            '<tr id="bet'+tx[1]['block']+tx[1]['trx_in_block']+'"><td data-timestamp="'+Date.parse(tx[1]['timestamp'])+'">'+
             timesince(Date.parse(tx[1]['timestamp']))+' ago</td><td>'+tx[1]['block']+'</td><td>'+
             tx[1]['op'][1]['from']+'</td><td>'+tx[1]['op'][1]['amount']+'</td><td>'+
             bet+'</td><td class="result'+tx[1]['block']+'">'+bet+'</td><td></td></tr>'
@@ -87,12 +87,8 @@ var newBankState = function(data) {
 
           getBlock(tx[1]['block']);
         }
-      }
-
-      if($('#bet'+tx[1]['block']+tx[1]['trx_in_block']+' .result'+tx[1]['block']).hasClass('won') === false &&
-        !$('#bet'+tx[1]['block']+tx[1]['trx_in_block']+' .result'+tx[1]['block']).hasClass('lost') === false
-      ) {
-         getBlock(tx[1]['block']);
+      } else {
+        getBlock(tx[1]['block']);
       }
     }
   });
@@ -107,7 +103,17 @@ var getBlock = function(block) {
         processBlock(block,response);
       });
     }
+  } else if(doneblocks['"'+block+'"'] == 1) {
+    $('.result'+block).each(function() {
+      var elem = $(this).parent().children(':first');
+      var value = elem.data('timestamp');
+      elem.text(getNewTime(value)+' ago');
+    });
   }
+}
+
+var getNewTime = function(time) {
+  return timesince(time);
 }
 
 var processBlock = function(block, data) {
@@ -119,10 +125,11 @@ var processBlock = function(block, data) {
 
 var newBlock = function(block,hash) {
   var goal = calculateGoal(hash);
+  doneblocks['"'+block+'"'] = 1;
   if(goal == false) {
     var next = block+1;
     $(".result"+block).addClass('result'+next);
-    doneblocks['"'+block+'"'] = 1;
+    doneblocks['"'+block+'"'] = 2;
     getBlock(next);
     return false;
   }
@@ -150,13 +157,13 @@ var newBlock = function(block,hash) {
     $('.result'+block).addClass('lost');
   }
 
+  var hide = 0;
   if(factor > 0 && factor < 100) {
     var amount = $('.result'+block).prev().prev().text();
     var asset = amount.substring(amount.length-5,amount.length);
     var tmp = amount.substring(0,amount.length-6);
     var win = Math.round((tmp * 100000 / (factor*1000))*1000)/1000;
     var cssClass = 'lost';
-    var hide = 0;
     if(win > maxwin) {
       win = 'Bet too high';
       hide = 1;
@@ -165,7 +172,7 @@ var newBlock = function(block,hash) {
       }
     } else if(won == 1) {
       cssClass = 'won';
-      win = Math.round(win*1000 * (1-houseedge)) / 1000+' '+asset;
+      win = Math.round(win*1000 * (1-houseedge) - tmp*1000) / 1000+' '+asset;
     } else if(won == 0) {
       win = '';
     }
@@ -177,10 +184,9 @@ var newBlock = function(block,hash) {
 
   $('.result'+block).next().addClass(cssClass).text(win);
   if(hide == 1) {
+    doneblocks['"'+block+'"'] = 2;
     $('.result'+block).parent().hide();
   }
-
-  doneblocks['"'+block+'"'] = 1;
 }
 
 // calculate the result for a block hash
