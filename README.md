@@ -12,3 +12,5 @@ requires sqlite
 create dice.db from dicedb.txt
 
 run watch.py
+
+uses [steemjs](https://github.com/pharesim/steemjs)
