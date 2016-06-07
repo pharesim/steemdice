@@ -86,7 +86,7 @@ var newBankState = function(data) {
           );
         }
       }
-      getBlock(tx[1]['block']);}
+      getBlock(tx[1]['block']);
     }
   });
 }
