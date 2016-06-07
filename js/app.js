@@ -104,13 +104,9 @@ var getBlock = function(block) {
     $('.result'+block).each(function() {
       var elem = $(this).parent().children(':first');
       var value = elem.data('timestamp');
-      elem.text(getNewTime(value)+' ago');
+      elem.text(timesince(value)+' ago');
     });
   }
-}
-
-var getNewTime = function(time) {
-  return timesince(time);
 }
 
 var processBlock = function(block, data) {
