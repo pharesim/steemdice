@@ -1,0 +1,52 @@
+<html>
+<head>
+  <style>
+    .won { color: green; }
+    .lost { color: red; }
+  </style>
+</head>
+
+<body>
+
+  <div id="content">
+
+    <fieldset>
+      <legend>Last roll</legend>
+      Block: <span id="lastBlockHeight"></span><br />
+      ID: <span id="lastBlockId"></span><br />
+      Result: <span id="lastBlockGoal"></span><br />
+    </fieldset>
+
+    <table>
+      <thead>
+        <tr>
+          <th colspan="6">Latest games</th>
+        </tr><tr>
+          <th>Time</th>
+          <th>Block</th>
+          <th>User</th>
+          <th>Amount</th>
+          <th>Number</th>
+          <th>Result</th>
+          <th>Won</th>
+        </tr>
+      </thead>
+      <tbody id="txTable"></tbody>
+    </table>
+
+    <fieldset>
+      <legend>Rules</legend>
+      House edge: <span id="houseEdge"></span>%<br />
+      Max win: <span id="maxWin"></span> STEEM<br />
+    </fieldset>
+
+    <a href="https://steemit.com/steem/@pharesim/gamble-with-steem?r=pharesim" target="_blank">About</a>
+  </div>
+
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+<!--  <script type="text/javascript" src="js/steem-rpc/bundle.js"></script> -->
+  <script type="text/javascript" src="js/ws.js"></script>
+  <script type="text/javascript" src="js/steem.js"></script>
+  <script type="text/javascript" src="js/app.js"></script>
+</body>
+</html>
