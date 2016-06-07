@@ -84,12 +84,9 @@ var newBankState = function(data) {
             tx[1]['op'][1]['from']+'</td><td>'+tx[1]['op'][1]['amount']+'</td><td>'+
             bet+'</td><td class="result'+tx[1]['block']+'">'+bet+'</td><td></td></tr>'
           );
-
-          getBlock(tx[1]['block']);
         }
-      } else {
-        getBlock(tx[1]['block']);
       }
+      getBlock(tx[1]['block']);}
     }
   });
 }
