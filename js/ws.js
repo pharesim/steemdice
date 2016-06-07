@@ -30,7 +30,6 @@ WebSocketWrapper = (function() {
 
   ws.send = function(data, callback) {
       this.callbacks[data['id']] = callback;
-      var data = {"id": data['id'], "method": data['method'], "params": data['params']}
       var json = JSON.stringify(data);
       this.connection.send(json);
   }
