@@ -4,7 +4,7 @@ import json
 import time
 
 #config
-watching = 'soupper0'
+watching = 'steemdice1'
 maxwin = {'STEEM': 10,'SBD': 5}
 houseedge = 0.01
 
@@ -39,28 +39,32 @@ def main():
             amount = tx[1]['amount'][:-6]
             memo = tx[1]['memo']
             sender = tx[1]['from']
-            details = json.loads(memo)
-            if 'type' in details:
-              if details['type'] == 'higher':
-                factor = 100-details['number']
-              elif details['type'] == 'lower':
-                factor = 0+details['number']
+            factor = 0
+            try:
+              details = json.loads(memo)
+              if 'type' in details:
+                if details['type'] == 'higher':
+                  factor = 100-details['number']
+                elif details['type'] == 'lower':
+                  factor = 0+details['number']
+            except:
+              factor = 0
 
-              if factor > 0:
-                win = float(amount) * 100/factor
-                asset = tx[1]['amount'][-5:]
-                if asset != 'STEEM':
-                  asset = tx[1]['amount'][-3:]
+            if factor > 0:
+              win = float(amount) * 100/factor
+              asset = tx[1]['amount'][-5:]
+              if asset != 'STEEM':
+                asset = tx[1]['amount'][-3:]
 
-                if win > maxwin[asset]:
-                  client.wallet.transfer(watching,sender,tx[1]['amount'],'Sorry, the maximum amount you can win in one game is '+str(maxwin[asset])+' '+asset,True)
-                else:
-                  try:
-                    with conn:
-                      c.execute('''INSERT OR IGNORE INTO percentagebets (block, txid, user, amount, bet, asset) VALUES (?,?,?,?,?,?)''', (getblock, i, sender, amount, memo, 'STEEM'))
-                  except:
-                    print('ERROR INSERTING BET')
+              if win > maxwin[asset]:
+                client.wallet.transfer(watching,sender,tx[1]['amount'],'Sorry, the maximum amount you can win in one game is '+str(maxwin[asset])+' '+asset,True)
               else:
+                try:
+                  with conn:
+                    c.execute('''INSERT OR IGNORE INTO percentagebets (block, txid, user, amount, bet, asset) VALUES (?,?,?,?,?,?)''', (getblock, i, sender, amount, memo, 'STEEM'))
+                except:
+                  print('ERROR INSERTING BET')
+            elif memo != 'funding':
                 client.wallet.transfer(watching,sender,tx[1]['amount'],'Your bet was invalid',True)
 
       getblock = getblock + 1
