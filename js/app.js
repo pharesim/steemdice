@@ -1,4 +1,4 @@
-var bank = 'soupper0';
+var bank = 'steemdice1';
 var server = 'wss://steemit.com/ws';
 var houseedge = 0.01;
 var maxwin = 10;
