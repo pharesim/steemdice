@@ -5,7 +5,7 @@ import time
 
 #config
 watching = 'steemdice1'
-maxwin = {'STEEM': 10,'SBD': 5}
+maxwin = {'STEEM': 10,'SBD': 10}
 houseedge = 0.01
 
 #set up libraries
@@ -61,7 +61,7 @@ def main():
               else:
                 try:
                   with conn:
-                    c.execute('''INSERT OR IGNORE INTO percentagebets (block, txid, user, amount, bet, asset) VALUES (?,?,?,?,?,?)''', (getblock, i, sender, amount, memo, 'STEEM'))
+                    c.execute('''INSERT OR IGNORE INTO percentagebets (block, txid, user, amount, bet, asset) VALUES (?,?,?,?,?,?)''', (getblock, i, sender, amount, memo, asset))
                 except:
                   print('ERROR INSERTING BET')
             elif memo != 'funding':
@@ -78,7 +78,7 @@ def main():
     print('ERROR UPDATING BLOCKHEIGHT')
 
   #get active bets
-  c.execute("SELECT block, txid, user, amount, bet, asset FROM percentagebets WHERE processed IS NOT 1")
+  c.execute("SELECT block, txid, user, amount, bet, asset FROM percentagebets WHERE processed IS NOT 1 AND won IS NOT 0")
   bets = c.fetchall()
   for bet in bets:
     block = bet[0]
