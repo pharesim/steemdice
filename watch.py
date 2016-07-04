@@ -36,7 +36,11 @@ def main():
       for txs in block['transactions']:
         for (i,tx) in enumerate(txs['operations']):
           if tx[0] == 'transfer' and tx[1]['to'] == watching:
-            amount = tx[1]['amount'][:-6]
+            asset = getAssetFromAmount(tx[1]['amount'])
+            if asset == 'STEEM':
+              amount = tx[1]['amount'][:-6]
+            else:
+              amount = tx[1]['amount'][:-4]
             memo = tx[1]['memo']
             sender = tx[1]['from']
             factor = 0
@@ -52,10 +56,6 @@ def main():
 
             if factor > 0:
               win = float(amount) * 100/factor
-              asset = tx[1]['amount'][-5:]
-              if asset != 'STEEM':
-                asset = tx[1]['amount'][-3:]
-
               if win > maxwin[asset]:
                 client.wallet.transfer(watching,sender,tx[1]['amount'],'Sorry, the maximum amount you can win in one game is '+str(maxwin[asset])+' '+asset,True)
               else:
@@ -148,6 +148,11 @@ def main():
   conn.commit()
   return True
 
+def getAssetFromAmount(amount):
+  asset = amount[-5:]
+  if asset != 'STEEM':
+    asset = amount[-3:]
+  return asset
 
 if __name__ == "__main__":
   while True:
