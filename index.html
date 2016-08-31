@@ -358,8 +358,9 @@ td {
   right: 0;
   bottom: 0;
   left: 0;
-  /*display: none;*/
+
   visibility: hidden;
+
   background: rgba(0,0,0,0);
   transition: visibility 350ms, background 350ms;
 }
@@ -368,25 +369,22 @@ td {
   position: fixed;
   left: 50%;
   top: 40%;
-  transition: 150ms top;
+  transform: translate(-50%, -50%);
 
   width: 15rem;
   max-width: 100%;
 
-  transform: translate(-50%, -50%);
-
   text-align: center;
 
-
+  transition: 150ms top;
 }
 
-.modal__inner :first-child {
+.modal__inner > :first-child {
   margin-top: 0;
   padding-top: 0;
 }
 
 .modal.is-toggled {
-  /*display: block;*/
   visibility: visible;
   background: rgba(0,0,0,.70);
 }
