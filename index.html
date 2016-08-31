@@ -292,7 +292,7 @@ td {
     padding: 1rem;
   }
 
-  .box {
+  .box(:not[.modal__inner]) {
     margin-left: -1rem;
     margin-right: -1rem;
   }
@@ -304,6 +304,7 @@ td {
 
 .toasting {
   position: fixed;
+  z-index: 2;
   max-width: 25rem;
   background: #fff;
   left: 50%;
@@ -350,19 +351,48 @@ td {
   text-align: center;
 }
 
-#lean_overlay {
-    position: fixed;
-    z-index:100;
-    top: 0px;
-    left: 0px;
-    height:100%;
-    width:100%;
-    background: #000;
-    display: none;
+.modal {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  /*display: none;*/
+  visibility: hidden;
+  background: rgba(0,0,0,0);
+  transition: visibility 350ms, background 350ms;
 }
 
-#login_modal {
-  background-color: #fff;
+.modal__inner {
+  position: fixed;
+  left: 50%;
+  top: 40%;
+  transition: 150ms top;
+
+  width: 15rem;
+  max-width: 100%;
+
+  transform: translate(-50%, -50%);
+
+  text-align: center;
+
+
+}
+
+.modal__inner :first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.modal.is-toggled {
+  /*display: block;*/
+  visibility: visible;
+  background: rgba(0,0,0,.70);
+}
+
+.modal.is-toggled .modal__inner {
+  top: 50%;
 }
 
 </style>
@@ -375,19 +405,7 @@ td {
 
     <h1 class="page-logo">steemdice</h1>
 
-    <a href="#login_modal" id="login_link">login with your steem account</a>
-
-    <div id="login_modal">
-      <div>
-        <label for="username">Accountname</label>
-        <input type="text" name="username" id="username" />
-      </div>
-      <div>
-        <label for="username">Password or WIF</label>
-        <input type="password" name="password" id="password" />
-      </div>
-      <button id="login_button">Login</button>
-    </div>
+    <a href="#login_modal" data-toggle="login_modal">login with your steem account</a>
 
   </header>
 
@@ -451,6 +469,24 @@ td {
     <p>created by <a href="https://steemit.com/witness-category/@pharesim/witness-post" target="_blank">pharesim</a> | <a href="mailto:pharesim@protonmail.com">support</a></p>
     <p style="opacity: .5">Last Roll: Block <span id="lastBlockHeight"></span> | ID <span id="lastBlockId"></span> | Result <span id="lastBlockGoal"></span></p>
   </footer>
+
+  <div id="login_modal" class="modal" data-toggle="login_modal">
+    <div class="modal__inner box">
+
+      <h2>Login</h2>
+
+      <p>
+        <label for="username">Account Name</label>
+        <input type="text" name="username" id="username" />
+      </p>
+      <p>
+        <label for="username">Password or WIF</label>
+        <input type="password" name="password" id="password" />
+      </p>
+      <button id="login_button">Login</button>
+
+    </div>
+  </div>
 
 
   <!-- <div class="toasting toasting--show">

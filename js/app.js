@@ -45,11 +45,18 @@ $( document ).ready(function() {
     }
   });
 
-  $("#login_modal").hide();
-  $("#login_link").leanModal();
   $("#login_button").click(function(e){
     e.preventDefault();
     login();
+  });
+
+  // Generic Toggle
+  // Add .is-toggled to target element
+  $("[data-toggle]").click(function() {
+    id = $(this).data("toggle");
+    $("#" + id).toggleClass("is-toggled");
+  }).children().click(function(e) {
+    return false;
   });
 
   proceed();
