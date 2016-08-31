@@ -4,9 +4,15 @@ var houseedge = 0.01;
 var maxwin = 10;
 
 //global
-var steem = {};
+//var steem = {};
 var blocks = [];
 var doneblocks = {};
+
+var bankroll_sbd = 0;
+var bankroll_steem = 0;
+var playing_with = 'sbd';
+var user = '';
+var wif = '';
 
 
 // main function
@@ -14,13 +20,57 @@ $( document ).ready(function() {
   $("#houseEdge").text(houseedge * 100);
   $("#maxWin").text(maxwin);
 
-  ws = new WebSocketWrapper(server);
-  ws.connect().then(function(response) {
-    steem = new SteemWrapper(ws);
-    proceed();
-  }, function(error) { alert(error) });
+  $(".play_with_steem").hide();
+  $("#switch_to_sbd, #switch_to_steem").click(function(e){
+    e.preventDefault();
+    $(".play_with_sbd, .play_with_steem").toggle();
+    if(playing_with == 'sbd') {
+      playing_with = 'steem';
+    } else {
+      playing_with = 'sbd';
+    }
+  });
+
+  $('#double_bet').click(function(e){
+    e.preventDefault();
+    let oldbet = $('#bet_amount').val();
+    $("#bet_amount").val(oldbet*2);
+    $("#bet_amount").change();
+  });
+
+  $("#bet_amount").change(function(e){
+    let betAmount = $(this).val();
+    if(betAmount > window['bankroll_' + playing_with]) {
+      $(this).val(window['bankroll_' + playing_with]);
+    }
+  });
+
+  $("#login_modal").hide();
+  $("#login_link").leanModal();
+  $("#login_button").click(function(e){
+    e.preventDefault();
+    login();
+  });
+
+  proceed();
 });
 
+
+var login = function() {
+  user = $("#username").val();
+  var pass = $("#password").val();
+
+  if(pass.startsWith("5") && pass.length() == 51) {
+    wif = pass;
+  } else {
+    wif = steem.broadcast.toWif(user, pass, 'active');
+  }
+
+  console.log(wif);
+
+  console.log(user);
+  console.log(pass);
+}
 
 //requests
 var proceed = function() {
@@ -34,11 +84,11 @@ var proceed = function() {
 }
 
 var repeatedRequests = function() {
-  steem.send('get_dynamic_global_properties',[], function(response) {
-    newProperties(response);
+  steem.api.getDynamicGlobalProperties(function(err, result) {
+    newProperties(result);
   });
-  steem.send('call',[0,'get_state',['/@'+bank+'/transfers']], function(response) {
-    newBankState(response);
+  steem.api.getState('/@'+bank+'/transfers', function(err, result) {
+    newBankState(result);
   });
 }
 
@@ -77,12 +127,11 @@ var newBankState = function(data) {
           } else if(memo['type'] == 'lower') {
             type = '<';
           }
-          bet = '<span class="betType">'+type+'</span> <span class="betNumber">'+escapeHtml(memo['number'])+'</span>';
+          bet = '<span class="betAmount">'+tx[1]['op'][1]['amount']+'</span> <span class="betType">'+type+'</span> <span class="betNumber">'+escapeHtml(memo['number'])+'</span>';
           table.prepend(
             '<tr id="bet'+tx[1]['block']+tx[1]['trx_in_block']+'"><td data-timestamp="'+Date.parse(tx[1]['timestamp'])+'">'+
             timesince(Date.parse(tx[1]['timestamp']))+' ago</td><td>'+tx[1]['block']+'</td><td>'+
-            tx[1]['op'][1]['from']+'</td><td>'+tx[1]['op'][1]['amount']+'</td><td>'+
-            bet+'</td><td class="result'+tx[1]['block']+'">'+bet+'</td><td></td></tr>'
+            tx[1]['op'][1]['from']+'</td><td style="display: none;">'+bet+'</td><td class="result'+tx[1]['block']+'">'+bet+'</td></tr>'
           );
         }
       }
@@ -96,8 +145,8 @@ var getBlock = function(block) {
     if(typeof blocks[block] !== 'undefined') {
       newBlock(block,blocks[block]);
     } else {
-      steem.send('get_block',[block+1], function(response) {
-        processBlock(block,response);
+      steem.api.getBlock(block+1, function(err, result) {
+        processBlock(block,result);
       });
     }
   } else if(doneblocks['"'+block+'"'] == 1) {
@@ -152,7 +201,7 @@ var newBlock = function(block,hash) {
 
   var hide = 0;
   if(factor > 0 && factor < 100) {
-    var amount = $('.result'+block).prev().prev().text();
+    var amount = $('.result'+block).prev().children('.betAmount').text();
     var asset = amount.substring(amount.length-5,amount.length);
     var tmp = amount.substring(0,amount.length-6);
     var win = Math.round((tmp * 100000 / (factor*1000))*1000)/1000;
@@ -167,7 +216,7 @@ var newBlock = function(block,hash) {
       cssClass = 'won';
       win = Math.round(win*1000 * (1-houseedge) - tmp*1000) / 1000+' '+asset;
     } else if(won == 0) {
-      win = '';
+      win = 0 - tmp;
     }
   } else {
     win = 'Invalid bet';
@@ -175,7 +224,7 @@ var newBlock = function(block,hash) {
     cssClass = 'won';
   }
 
-  $('.result'+block).next().addClass(cssClass).text(win);
+  $('.result'+block).addClass(cssClass).text(win);
   if(hide == 1) {
     doneblocks['"'+block+'"'] = 2;
     $('.result'+block).parent().hide();
@@ -236,4 +285,16 @@ function timesince(date) {
     return interval + " minutes";
   }
   return Math.floor(seconds) + " seconds";
+}
+
+function bankrollModified(sign, amount) {
+  var direction = 'positive';
+  if(sign == '-') {
+    direction = 'negative';
+  }
+
+  $("#bankroll_movement_container").html('<strong class="bankroll__movement bankroll__movement--'+direction+'">'+sign+amount+'</strong>');
+  setTimeout(function(){
+    $("#bankroll_movement_container").html("");
+  },2100);
 }
