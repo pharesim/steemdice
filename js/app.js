@@ -23,6 +23,9 @@ var wif = '';
 $( document ).ready(function() {
   $("#houseEdge").text(houseedge * 100);
 
+  $("#max_win_steem").text(maxwin_steem);
+  $("#max_win_sbd").text(maxwin_sbd);
+
   $(".play_with_steem").hide();
   $("#switch_to_sbd, #switch_to_steem").click(function(e){
     e.preventDefault();
