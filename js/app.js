@@ -302,7 +302,7 @@ var newProperties = function(data) {
   $('#lastBlockId').html(hash);
   var goal = calculateGoal(hash,block);
   if(goal == false) {
-    goal = 'Invalid';
+    goal = 'Ignored';
   }
   $('#lastBlockGoal').html(goal);
 }
