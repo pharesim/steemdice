@@ -9,6 +9,8 @@ var maxwin_sbd = 10;
 var blocks = [];
 var doneblocks = {};
 
+var updateInterval = 3000;
+
 var bankroll_sbd = 0;
 var bankroll_steem = 0;
 var playing_with = 'sbd';
@@ -269,7 +271,7 @@ var proceed = function() {
     function(){
       repeatedRequests();
     },
-    5000
+    updateInterval
   );
 }
 
