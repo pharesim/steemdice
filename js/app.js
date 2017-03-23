@@ -10,6 +10,7 @@ var blocks = [];
 var doneblocks = {};
 
 var updateInterval = 3000;
+var updating = false;
 
 var bankroll_sbd = 0;
 var bankroll_steem = 0;
@@ -279,14 +280,17 @@ var proceed = function() {
 }
 
 var repeatedRequests = function() {
-  steem.api.getDynamicGlobalProperties(function(err, result) {
-    newProperties(result);
-  });
-  steem.api.getState('/@'+bank+'/transfers', function(err, result) {
-    newBankState(result);
-  });
+  if(updating == false) {
+    updating = true;
+    steem.api.getDynamicGlobalProperties(function(err, result) {
+      newProperties(result);
+    });
+    steem.api.getState('/@'+bank+'/transfers', function(err, result) {
+      newBankState(result);
+    });
 
-  updateUser();
+    updateUser();
+  }
 }
 
 
@@ -301,6 +305,7 @@ var newProperties = function(data) {
     goal = 'Invalid';
   }
   $('#lastBlockGoal').html(goal);
+  updating = false;
 }
 
 var newBankState = function(data) {
