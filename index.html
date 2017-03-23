@@ -453,10 +453,8 @@ td {
       </p>
 
       <button class="large" id="roll">Roll Dice</button>
-      <span id="rolling">Placing bet...</span>
-      <span id="rolled">Bet placed!</span>
-      <!-- While processing -->
-      <!-- <button class="large" disabled><span class="animation--pulse">rolling...</span></button> -->
+      <button class="large" disabled id="rolling"><span class="animation--pulse">rolling...</span></button>
+      <button class="large" disabled id="rolled">Bet placed!</button>
     </div>
 
     <div class="latest-rolls">
@@ -477,7 +475,7 @@ td {
   </main>
 
   <footer class="page-footer text-center small">
-    <p>created by <a href="https://steemit.com/witness-category/@pharesim/witness-post" target="_blank">pharesim</a> | <a href="mailto:pharesim@protonmail.com">support</a></p>
+    <p><a href="https://github.com/pharesim/steemdice" target="_blank">github</a> | <a href="mailto:pharesim@protonmail.com">support</a></p>
     <p style="opacity: .5">Last Roll: Block <span id="lastBlockHeight"></span> | ID <span id="lastBlockId"></span> | Result <span id="lastBlockGoal"></span></p>
   </footer>
 
@@ -506,7 +504,6 @@ td {
   </div> -->
 
   <script type="text/javascript" src="js/jquery.min.js"></script>
-  <!-- <script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script> --> 
   <script type="text/javascript" src="js/steem.min.js"></script>
   <script type="text/javascript" src="js/app.js"></script>
 </body>
