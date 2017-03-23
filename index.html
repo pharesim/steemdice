@@ -393,6 +393,11 @@ td {
   top: 50%;
 }
 
+
+
+#logged_in_message, #busy_indicator, #login_error, #rolling, #rolled {
+  display: none;
+}
 </style>
 
 </head>
@@ -403,7 +408,11 @@ td {
 
     <h1 class="page-logo">steemdice</h1>
 
-    <a href="#login_modal" data-toggle="login_modal">login with your steem account</a>
+    <a href="#login_modal" data-toggle="login_modal" id="login_link">login with your steem account</a>
+    <span id="logged_in_message">
+      Logged in as <span class="username"></span><br />
+      <a href="#logout" id="logout">Logout</a>
+    </span>
 
   </header>
 
@@ -412,10 +421,10 @@ td {
     <p class="bankroll">
       <span class="bankroll__total large">
         Your Bankroll:
-        <span class="play_with_steem"><span id="bankroll_steem">0</span> Steem</span>
-        <span class="play_with_sbd"><span id="bankroll_sbd">0</span> SD</span>
+        <span class="play_with_steem"><span id="bankroll_steem">0 Steem</span></span>
+        <span class="play_with_sbd"><span id="bankroll_sbd">0 SBD</span></span>
       </span><br>
-      <a href="#" id="switch_to_sbd" class="small play_with_steem">play with SD</a>
+      <a href="#" id="switch_to_sbd" class="small play_with_steem">play with SBD</a>
       <a href="#" id="switch_to_steem" class="small play_with_sbd">play with Steem</a>
       <span id="bankroll_movement_container"></span>
     </p>
@@ -433,15 +442,19 @@ td {
 
         <label class="u-1-2">
           <span class="label__text">Win Chance</span>
-          <input class="large++ strong" value="50%">
+          <span class="input-double-container">
+            <input class="large++ strong" id="bet_chance" value="50">
+            <button disabled="disabled">%</button>
         </label>
       </div>
 
       <p class="text-center">
-        If you win, you receive <span id="potential_win">1.485</span> <span class="play_with_steem">Steem</span><span class="play_with_sbd">SD</span>
+        If you win, you receive <span id="potential_win">1.98</span> <span class="play_with_steem">Steem</span><span class="play_with_sbd">SBD</span>
       </p>
 
-      <button class="large">Roll Dice</button>
+      <button class="large" id="roll">Roll Dice</button>
+      <span id="rolling">Placing bet...</span>
+      <span id="rolled">Bet placed!</span>
       <!-- While processing -->
       <!-- <button class="large" disabled><span class="animation--pulse">rolling...</span></button> -->
     </div>
@@ -481,7 +494,9 @@ td {
         <label for="username">Password or WIF</label>
         <input type="password" name="password" id="password" />
       </p>
+      <div id="login_error" class="error">Error logging in. Please try again.</div>
       <button id="login_button">Login</button>
+      <span id="busy_indicator">Logging in...</span>
 
     </div>
   </div>
@@ -491,7 +506,8 @@ td {
   </div> -->
 
   <script type="text/javascript" src="js/jquery.min.js"></script>
-  <script type="text/javascript" src="js/steem.fabien.js"></script>
+  <!-- <script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script> --> 
+  <script type="text/javascript" src="js/steem.min.js"></script>
   <script type="text/javascript" src="js/app.js"></script>
 </body>
 </html>
