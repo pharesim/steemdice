@@ -305,7 +305,6 @@ var newProperties = function(data) {
     goal = 'Invalid';
   }
   $('#lastBlockGoal').html(goal);
-  updating = false;
 }
 
 var newBankState = function(data) {
@@ -343,6 +342,8 @@ var newBankState = function(data) {
       getBlock(tx[1]['block']);
     }
   }
+
+  updating = false;
 }
 
 var getBlock = function(block) {
