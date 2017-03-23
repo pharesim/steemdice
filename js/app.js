@@ -34,9 +34,13 @@ $( document ).ready(function() {
 
   $('#double_bet').click(function(e){
     e.preventDefault();
-    let oldbet = $('#bet_amount').val();
-    $("#bet_amount").val(oldbet*2);
-    $("#bet_amount").change();
+    if(loggedIn == false) {
+      $("#login_modal").addClass('is-toggled');
+    } else {
+      let oldbet = $('#bet_amount').val();
+      $("#bet_amount").val(oldbet*2);
+      $("#bet_amount").change();
+    }
   });
 
   $("#bet_amount").change(function(e){
@@ -192,7 +196,6 @@ var login = function() {
     }
 
     $("#password").val("");
-    $("#double_bet").removeAttr('disabled');
     loginBusy();
   });
 }
