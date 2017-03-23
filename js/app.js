@@ -121,7 +121,7 @@ $( document ).ready(function() {
       if(playing_with == 'steem') {
         amount = amount+' STEEM';
       }
-      steem.broadcast.transfer(wif, user, bank, amount, '{"type":"lower","number":'+$("#bet_chance").val()+'}', function(err, result) {
+      steem.broadcast.transfer(wif, user, bank, amount, '{"id":"steemdice.net","type":"lower","number":'+$("#bet_chance").val()+'}', function(err, result) {
         $("#rolling").hide();
         $("#rolled").show();
         updateUser();
