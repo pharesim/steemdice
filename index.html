@@ -436,7 +436,7 @@ td {
           <span class="label__text">Bet Amount</span>
           <span class="input-double-container">
             <input class="large++ strong" id="bet_amount" value="1">
-            <button id="double_bet">2&times;</button>
+            <button id="double_bet" disabled>2&times;</button>
           </span>
         </label>
 
@@ -500,7 +500,7 @@ td {
   </div>
 
   <div id="toaster" class="toasting toasting--show">
-    Welcome to SteemDice! Log in with your active authority to play.
+    Welcome to SteemDice! <a href="#login_modal" data-toggle="login_modal" id="login_link_toaster">Log in</a> with your active authority to play.
   </div>
 
   <script type="text/javascript" src="js/jquery.min.js"></script>

@@ -192,6 +192,7 @@ var login = function() {
     }
 
     $("#password").val("");
+    $("#double_bet").removeAttr('disabled');
     loginBusy();
   });
 }
