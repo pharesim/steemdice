@@ -1,37 +1,37 @@
-from steemapi.steemclient import SteemClient
+from piston import Steem
+from piston.block import Block
+from pistonbase import transactions
+from pistonapi.steemnoderpc import SteemNodeRPC
 import sqlite3
 import json
 import time
+import sys
+from pprint import pprint
 
 #config
 watching = 'steemdice1'
 maxwin = {'STEEM': 10,'SBD': 10}
 houseedge = 0.01
 
-#set up libraries
-class Config():
-    wallet_host = "localhost"
-    wallet_port = 8092
-    witness_url = "ws://localhost:8090"
+wif = ''
+client = Steem()
+#rpc = SteemNodeRPC('ws://steemd.pharesim.me:8090')
+rpc = SteemNodeRPC('wss://steemd.steemit.com')
+
 conn = sqlite3.connect('dice.db')
 c = conn.cursor()
-client = SteemClient(Config)
 
 def main():
-
   c.execute("SELECT blockheight FROM last_check")
   blockheight = c.fetchall()
   startblock = blockheight[0][0]
 
   #watch account
-  account = client.ws.get_accounts(['pharesim'])
-  id = account[0]['id']
-  props = client.ws.get_dynamic_global_properties()
-  headblock = props['head_block_number']
   go = True
   getblock = startblock
-  while go == True:
-    block = client.ws.get_block(getblock)
+  while go == True and getblock < 10408613:
+    print('Block: '+str(getblock))
+    block = Block(getblock)
     if block != None:
       for txs in block['transactions']:
         for (i,tx) in enumerate(txs['operations']):
@@ -57,7 +57,7 @@ def main():
             if factor > 0:
               win = float(amount) * 100/factor
               if win > maxwin[asset]:
-                client.wallet.transfer(watching,sender,tx[1]['amount'],'Sorry, the maximum amount you can win in one game is '+str(maxwin[asset])+' '+asset,True)
+                transfer(watching,sender,tx[1]['amount'],'Sorry, the maximum amount you can win in one game is '+str(maxwin[asset])+' '+asset)
               else:
                 try:
                   with conn:
@@ -65,7 +65,7 @@ def main():
                 except:
                   print('ERROR INSERTING BET')
             elif memo != 'funding':
-                client.wallet.transfer(watching,sender,tx[1]['amount'],'Your bet was invalid',True)
+                transfer(watching,sender,tx[1]['amount'],'Your bet was invalid')
 
       getblock = getblock + 1
     else:
@@ -95,7 +95,7 @@ def main():
     while result > 999999:
       checkblock = checkblock + 1
       try:
-        res = client.ws.get_block(checkblock)
+        res = Block(checkblock)
         if res != None:
           result = int(res['previous'][-5:],16)
         else:
@@ -129,12 +129,12 @@ def main():
           won[1] = won[1]+'0'
         won = won[0]+'.'+won[1]
         try:
-          client.wallet.transfer(watching,user,won+" "+asset,'Congratulations, you won! Your bet: '+details['type']+' '+str(details['number'])+'; Result: '+str(result),True)
+          transfer(watching,user,won+" "+asset,'Congratulations, you won! Your bet: '+details['type']+' '+str(details['number'])+'; Result: '+str(result))
           processed = True
         except:
           print('ERROR SENDING MONEY')
       elif won == 0 and amount > 0.003:
-        client.wallet.transfer(watching,user,'0.001 '+asset,'You lost! Your bet: '+details['type']+' '+str(details['number'])+'; Result: '+str(result),True)
+        transfer(watching,user,'0.001 '+asset,'You lost! Your bet: '+details['type']+' '+str(details['number'])+'; Result: '+str(result))
 
       unsaved = 1
       while unsaved == 1:
@@ -147,6 +147,26 @@ def main():
 
   conn.commit()
   return True
+
+def transfer(sender,recipient,amount,memo):
+  expiration = transactions.formatTimeFromNow(60)
+  op = transactions.Transfer(
+    **{"from": sender,
+       "to": recipient,
+       "amount": amount,
+       "memo": memo}
+  )
+  ops    = [transactions.Operation(op)]
+  ref_block_num, ref_block_prefix = transactions.getBlockParams(rpc)
+  tx     = transactions.Signed_Transaction(ref_block_num=ref_block_num,
+                                         ref_block_prefix=ref_block_prefix,
+                                         expiration=expiration,
+                                         operations=ops)
+  tx = tx.sign([wif])
+
+  # Broadcast JSON to network
+  rpc.broadcast_transaction(tx.json(), api="network_broadcast")
+
 
 def getAssetFromAmount(amount):
   asset = amount[-5:]
