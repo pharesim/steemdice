@@ -1,7 +1,7 @@
 CREATE TABLE last_check (
   blockheight NUMERIC
 );
-INSERT INTO last_check (blockheight) VALUES (10408615);
+INSERT INTO last_check (blockheight) VALUES ( 10447630);
 
 CREATE TABLE percentagebets (
   block NUMERIC,
