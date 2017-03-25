@@ -100,12 +100,9 @@ def main():
       checkblock = checkblock + 1
       try:
         res = Block(checkblock)
-        if res != None:
-          result = int(res['previous'][-5:],16)
-        else:
-          result = -1
+        result = int(res['previous'][-5:],16)
       except:
-        result = result + 1
+        result = -1
 
     won = 0
     factor = 0
