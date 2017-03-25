@@ -31,7 +31,11 @@ def main():
   getblock = startblock
   while go == True:
     print('Block: '+str(getblock))
-    block = Block(getblock)
+    try: 
+      block = Block(getblock)
+    except:
+      block = None
+      
     if block != None:
       for txs in block['transactions']:
         for (i,tx) in enumerate(txs['operations']):
