@@ -1,8 +1,7 @@
 var bank = 'steemdice1';
-var server = 'wss://node.steem.ws/';
-var houseedge = 0.01;
-var maxwin_steem = 10;
-var maxwin_sbd = 10;
+var houseedge = 0.02;
+var maxwin_steem = 100;
+var maxwin_sbd = 25;
 
 //global
 //var steem = {};
