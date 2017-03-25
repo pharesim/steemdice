@@ -10,8 +10,8 @@ from pprint import pprint
 
 #config
 watching = 'steemdice1'
-maxwin = {'STEEM': 10,'SBD': 10}
-houseedge = 0.01
+maxwin = {'STEEM': 100,'SBD': 25}
+houseedge = 0.02
 
 wif = ''
 client = Steem()
@@ -35,7 +35,7 @@ def main():
       block = Block(getblock)
     except:
       block = None
-      
+
     if block != None:
       for txs in block['transactions']:
         for (i,tx) in enumerate(txs['operations']):
