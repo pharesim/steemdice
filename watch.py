@@ -29,7 +29,7 @@ def main():
   #watch account
   go = True
   getblock = startblock
-  while go == True and getblock < 10408613:
+  while go == True:
     print('Block: '+str(getblock))
     block = Block(getblock)
     if block != None:
