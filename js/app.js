@@ -45,6 +45,7 @@ $( document ).ready(function() {
       let oldbet = $('#bet_amount').val();
       $("#bet_amount").val(oldbet*2);
       $("#bet_amount").change();
+      calculateWin();
     }
   });
 
