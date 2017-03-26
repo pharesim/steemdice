@@ -77,6 +77,16 @@ $( document ).ready(function() {
   });
 
   $("#bet_chance").change(function(e){
+    let betChance = $(this).val();
+    betChance = betChance.replace(',','.');
+    if(betChance > 99.9) {
+      betChance = 99.99;
+    }
+    if(betChance < 0.1) {
+      betChance = 0.01
+    }
+    $(this).val(betChance)
+
     calculateWin();
   });
 
@@ -147,26 +157,27 @@ $( document ).ready(function() {
 var calculateWin = function() {
   let amount = $("#bet_amount").val();
   let chance = $("#bet_chance").val();
-  if(chance < 1) {
-    chance = 1;
+  if(chance != '' && chance < 0.01) {
+    chance = 0.01;
   }
-  if(chance > 99) {
-    chance = 99;
+  if(chance > 99.99) {
+    chance = 99.99;
   }
   $("#bet_chance").val(chance);
   let factor = 100/chance;
   let win = (amount * factor) * (1 - houseedge);
   let maxwin = window['maxwin_'+playing_with];
   if(win > maxwin) {
-      win = maxwin;
       if(amount >= maxwin) {
         amount = maxwin / 2;
       }
-      factor = (win/(1-houseedge))/amount;
-      
+      factor = (maxwin/(1-houseedge))/amount;
       chance = 100/factor;
-      $("#bet_amount").val(Math.round(amount*1000)/1000);
-      $("#bet_chance").val(Math.round(chance*100)/100);
+      amount = Math.round(amount*1000)/1000;
+      chance = Math.round(chance*100)/100;
+      factor = 100/chance;
+      $("#bet_amount").val(amount);
+      $("#bet_chance").val(chance);
       win = (amount * factor) * (1 - houseedge);
   }
   $("#potential_win").text(Math.round(win*1000)/1000);
