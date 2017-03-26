@@ -60,10 +60,9 @@ $( document ).ready(function() {
       if(diff < 0) {
         betAmount = bankroll;
       }
-
-      betAmount = String(betAmount);
     }
 
+    betAmount = String(betAmount);
     betAmount = betAmount.replace(',','.');
     let check = betAmount.split('.');
     betAmount = check[0];
