@@ -48,15 +48,18 @@ $( document ).ready(function() {
     }
   });
 
-  $("#bet_amount").change(function(e){
+  $("#bet_amount").keyup(function(e){
     let betAmount = $(this).val();
-    let bankroll = window['bankroll_' + playing_with];
-    let diff = bankroll - betAmount;
-    if(diff < 0) {
-      betAmount = bankroll;
+    if(loggedIn == true) {
+      let bankroll = window['bankroll_' + playing_with];
+      let diff = bankroll - betAmount;
+      if(diff < 0) {
+        betAmount = bankroll;
+      }
+
+      betAmount = String(betAmount);
     }
 
-    betAmount = String(betAmount);
     betAmount = betAmount.replace(',','.');
     let check = betAmount.split('.');
     betAmount = check[0]
@@ -68,6 +71,7 @@ $( document ).ready(function() {
     }
     
     $(this).val(betAmount);
+
     calculateWin();
   });
 
