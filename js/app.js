@@ -51,8 +51,8 @@ $( document ).ready(function() {
 
   $("#bet_amount").keyup(function(e){
     let betAmount = $(this).val();
-    if(betAmount < 0.01) {
-      betAmount = 0.01
+    if(betAmount < 0.1) {
+      betAmount = 0.1;
     }
     if(loggedIn == true) {
       let bankroll = window['bankroll_' + playing_with];
@@ -66,7 +66,7 @@ $( document ).ready(function() {
 
     betAmount = betAmount.replace(',','.');
     let check = betAmount.split('.');
-    betAmount = check[0]
+    betAmount = check[0];
     if(check[1] !== undefined) {
       if(check[1].length > 3) {
         check[1] = check[1].substring(0,3);
