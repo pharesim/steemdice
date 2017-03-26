@@ -408,7 +408,12 @@ td {
 
     <h1 class="page-logo">steemdice</h1>
 
-    <a href="#login_modal" data-toggle="login_modal" id="login_link">login with your steem account</a>
+    <a href="#login_modal" data-toggle="login_modal" id="login_link">Log in with your steem account</a>
+    <div id="signup_link">
+      Not a steem user yet?
+      <a href="https://steemit.com/enter_email">Sign up!</a>
+    </div>
+
     <span id="logged_in_message">
       Logged in as <span class="username"></span><br />
       <a href="#logout" id="logout">Logout</a>
@@ -420,10 +425,12 @@ td {
     
     <p class="bankroll">
       <span class="bankroll__total large">
-        Your Bankroll:
-        <span class="play_with_steem"><span id="bankroll_steem">0 Steem</span></span>
-        <span class="play_with_sbd"><span id="bankroll_sbd">0 SBD</span></span>
-        <br />
+        <span id="bankroll">
+          Your Bankroll:
+          <span class="play_with_steem"><span id="bankroll_steem">0 Steem</span></span>
+          <span class="play_with_sbd"><span id="bankroll_sbd">0 SBD</span></span>
+          <br />
+        </span>
         Game limit: 
         <span class="play_with_sbd"><span id="max_win_sbd"></span> SBD</span>
         <span class="play_with_steem"><span id="max_win_steem"></span> Steem</span>

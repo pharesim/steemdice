@@ -26,7 +26,7 @@ $( document ).ready(function() {
   $("#max_win_steem").text(maxwin_steem);
   $("#max_win_sbd").text(maxwin_sbd);
 
-  $(".play_with_steem").hide();
+  $(".play_with_steem, #bankroll").hide();
   $("#switch_to_sbd, #switch_to_steem").click(function(e){
     e.preventDefault();
     $(".play_with_sbd, .play_with_steem").toggle();
@@ -221,8 +221,7 @@ var loginBusy = function() {
 
 var loggedInToggle = function() {
   $(".username").text(user);
-  $("#login_link").toggle();
-  $("#logged_in_message").toggle();
+  $("#login_link, #signup_link, #logged_in_message, #bankroll").toggle();
 }
 
 var logout = function() {
