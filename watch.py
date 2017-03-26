@@ -58,7 +58,7 @@ def main():
             except:
               factor = 0
 
-            if factor > 0 && amount >= 0.1:
+            if factor > 0 and amount >= 0.1:
               win = float(amount) * 100/factor * (1 - houseedge)
               if win > maxwin[asset]:
                 transfer(watching,sender,tx[1]['amount'],'Sorry, the maximum amount you can win in one game is '+str(maxwin[asset])+' '+asset)
