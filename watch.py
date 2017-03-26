@@ -179,6 +179,6 @@ if __name__ == "__main__":
   while True:
     print('checking...')
     main()
-    time.sleep(1)
+    time.sleep(2)
 
 conn.close()
