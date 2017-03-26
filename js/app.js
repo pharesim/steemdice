@@ -129,7 +129,7 @@ $( document ).ready(function() {
             $("#rolled").hide();
             $("#roll").show();
           },
-          2000
+          4000
         );
       });
     }
