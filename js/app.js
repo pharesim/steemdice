@@ -51,6 +51,9 @@ $( document ).ready(function() {
 
   $("#bet_amount").keyup(function(e){
     let betAmount = $(this).val();
+    if(betAmount < 0.01) {
+      betAmount = 0.01
+    }
     if(loggedIn == true) {
       let bankroll = window['bankroll_' + playing_with];
       let diff = bankroll - betAmount;
