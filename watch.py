@@ -15,7 +15,6 @@ houseedge = 0.02
 
 wif = ''
 client = Steem()
-#rpc = SteemNodeRPC('ws://steemd.pharesim.me:8090')
 rpc = SteemNodeRPC('wss://steemd.steemit.com')
 
 conn = sqlite3.connect('dice.db')
