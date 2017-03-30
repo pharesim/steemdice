@@ -393,6 +393,12 @@ td {
   top: 50%;
 }
 
+#about_modal .modal__inner {
+  width: 30rem;
+  max-height: 600px;
+  overflow: auto;
+  text-align: left;
+}
 
 
 #logged_in_message, #busy_indicator, #login_error, #rolling, #rolled {
@@ -487,7 +493,10 @@ td {
 
   <footer class="page-footer text-center small">
     <p style="opacity: .5">Last Roll: Block <span id="lastBlockHeight"></span> | ID <span id="lastBlockId"></span> | Result <span id="lastBlockGoal"></span></p>
-    <p><a href="https://github.com/pharesim/steemdice" target="_blank">github</a> | <a href="mailto:pharesim@protonmail.com">support</a></p>
+    <p>
+      <a href="#about" data-toggle="about_modal">about</a> |
+      <a href="https://github.com/pharesim/steemdice" target="_blank">github</a> |
+      <a href="mailto:pharesim@protonmail.com">support</a></p>
   </footer>
 
   <div id="login_modal" class="modal" data-toggle="login_modal">
@@ -510,8 +519,52 @@ td {
     </div>
   </div>
 
+  <div id="about_modal" class="modal" data-toggle="about_modal">
+    <div class="modal__inner box">
+      
+      <h2>About</h2>
+
+      <p>SteemDice is a provably fair, blockchain based gambling application.</p>
+
+      <p>
+        <strong>How can you prove that the games are fair?</strong>
+        <div class="small">
+          The transaction containing your bet defines the result. The result is calculated from the id of the block after.
+        </div>
+      </p>
+
+      <p>
+        <strong>Why do I need to give you my active private key?</strong>
+        <div class="small">
+          SteemDice does not manage its own userbase or wallets. Instead, it works as its own single purpose wallet to your steem account.
+        </div>
+      </p>
+      
+      <p>
+        <strong>Isn't this unsafe?</strong>
+        <div class="small">
+          Like on steemit.com, your key is not sent to a server. Transactions are signed in your browser, and only the hashed signature is transmitted to a steemd node to broadcast it on the steem network. No second party will ever get your key!
+        </div>
+      </p>
+
+      <p>
+        <strong>What else do you do to protect my key?</strong>
+        <div class="small">
+          Instead of hosting the application on our own servers, we chose github pages. Any attacker making himself able to change the code, will transparently show what he did with a new commit on github. Malicious activity can be detected immideately this way.
+        </div>
+      </p>
+
+      <p>
+        <strong>What can I do if I'm still unsure about the safety of my key?</strong>
+        <div class="small">
+          Save the page, or clone/download it from github. It works locally, on any device!
+        </div>
+      </p>
+    </div>
+  </div>
+
   <div id="toaster" class="toasting toasting--show">
-    Welcome to SteemDice! <a href="#login_modal" data-toggle="login_modal" id="login_link_toaster">Log in</a> to your Steem account with your active authority to play.
+    Welcome to SteemDice! <a href="#login_modal" data-toggle="login_modal" id="login_link_toaster">Log in</a> to your Steem account with your active authority to play <a href="#about_modal" data-toggle="about_modal">?</a>
   </div>
 
   <script type="text/javascript" src="js/jquery.min.js"></script>
