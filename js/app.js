@@ -13,7 +13,7 @@ var updating = false;
 
 var bankroll_sbd = 0;
 var bankroll_steem = 0;
-var playing_with = 'sbd';
+var playing_with = 'steem';
 var loggedIn = false;
 var user = '';
 var pub = '';
