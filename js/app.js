@@ -26,7 +26,7 @@ $( document ).ready(function() {
   $("#max_win_steem").text(maxwin_steem);
   $("#max_win_sbd").text(maxwin_sbd);
 
-  $(".play_with_steem, #bankroll").hide();
+  $(".play_with_sbd, #bankroll").hide();
   $("#switch_to_sbd, #switch_to_steem").click(function(e){
     e.preventDefault();
     $(".play_with_sbd, .play_with_steem").toggle();
