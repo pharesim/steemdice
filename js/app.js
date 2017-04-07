@@ -50,7 +50,7 @@ $( document ).ready(function() {
     }
   });
 
-  $("#bet_amount").keyup(function(e){
+  $("#bet_amount").change(function(e){
     let betAmount = $(this).val();
     if(betAmount < 0.1) {
       betAmount = 0.1;
