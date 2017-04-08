@@ -237,7 +237,7 @@ var newBankState = function(data) {
           let number = escapeHtml(memo['number']);
           table.prepend(
             '<tr id="bet'+tx[1]['block']+tx[1]['trx_in_block']+'" class="block'+tx[1]['block']+'"><td>'+tx[1]['op'][1]['from']+
-            '</td><td data-timestamp="'+Date.parse(tx[1]['timestamp'])+'" title="'+timesince(Date.parse(tx[1]['timestamp']))+' ago">'+tx[1]['block']+
+            '</td><td data-timestamp="'+Date.parse(tx[1]['timestamp']+'Z')+'" title="'+timesince(Date.parse(tx[1]['timestamp']+'Z'))+' ago">'+tx[1]['block']+
             '</td><td class="target'+tx[1]['block']+'"></td><td><span class="betType">'+type+'</span> <span class="betNumber">'+number+
             '</span><span class="betAmount" style="display:none">'+tx[1]['op'][1]['amount']+'</span></td><td class="profit'+
             tx[1]['block']+'"></td></tr>'
@@ -410,7 +410,7 @@ var newBlock = function(block,hash) {
     getBlock(next);
     return false;
   }
-  $('.target'+block).text(goal);
+  $('.target'+block).text(goal).attr('title','Hash: '+hash);
   $(".block"+block).each(function(index){
     var type = $(this).find(".betType").html();
     var number = $(this).find(".betNumber").html();
@@ -504,9 +504,8 @@ function escapeHtml(string) {
 
 // time ago
 function timesince(date) {
-  var now = new Date();
-  var off = now.getTimezoneOffset()*60*1000;
-  var seconds = Math.floor(((now - date) + off) / 1000);
+  var now = Date.now();
+  var seconds = Math.floor((now - date) / 1000);
   var interval = Math.floor(seconds / 31536000);
 
   if (interval > 1) {
