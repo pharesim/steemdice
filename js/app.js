@@ -1,19 +1,19 @@
+// config
 var bank = 'steemdice1';
 var houseedge = 0.02;
 var maxwin_steem = 100;
 var maxwin_sbd = 25;
 
-//global
-//var steem = {};
+// display
+var updateInterval = 3000;
+var playing_with = 'steem';
+
+// global variables
 var blocks = [];
 var doneblocks = {};
-
-var updateInterval = 3000;
 var updating = false;
-
 var bankroll_sbd = 0;
 var bankroll_steem = 0;
-var playing_with = 'steem';
 var loggedIn = false;
 var user = '';
 var pub = '';
@@ -21,11 +21,13 @@ var wif = '';
 
 // main function
 $( document ).ready(function() {
+  
+  // fill in variables
   $("#houseEdge").text(houseedge * 100);
-
   $("#max_win_steem").text(maxwin_steem);
   $("#max_win_sbd").text(maxwin_sbd);
 
+  // currency selection and switching
   $(".play_with_sbd, .play_with_steem, #bankroll").hide();
   $(".play_with_"+playing_with).show()
   $("#switch_to_sbd, #switch_to_steem").click(function(e){
@@ -38,6 +40,7 @@ $( document ).ready(function() {
     }
   });
 
+  // double bet button
   $('#double_bet').click(function(e){
     e.preventDefault();
     if(loggedIn == false) {
@@ -50,11 +53,16 @@ $( document ).ready(function() {
     }
   });
 
+  // check bet amount
   $("#bet_amount").change(function(e){
     let betAmount = $(this).val();
+
+    // minimum bet 100 of the smallest unit to ensure fees
     if(betAmount < 0.1) {
       betAmount = 0.1;
     }
+
+    // check against bankroll of logged in users
     if(loggedIn == true) {
       let bankroll = window['bankroll_' + playing_with];
       let diff = bankroll - betAmount;
@@ -63,8 +71,8 @@ $( document ).ready(function() {
       }
     }
 
-    betAmount = String(betAmount);
-    betAmount = betAmount.replace(',','.');
+    // enforce decimal point and limit to 3 decimals
+    betAmount = String(betAmount).replace(',','.');
     let check = betAmount.split('.');
     betAmount = check[0];
     if(check[1] !== undefined) {
@@ -79,13 +87,18 @@ $( document ).ready(function() {
     calculateWin();
   });
 
+  // check chance
   $("#bet_chance").change(function(e){
     let betChance = $(this).val();
+
+    //enforce decimal point
     betChance = betChance.replace(',','.');
-    if(betChance > 99.9) {
+
+    // between 0.01 and 99.99
+    if(betChance > 99.99) {
       betChance = 99.99;
     }
-    if(betChance < 0.1) {
+    if(betChance < 0.01) {
       betChance = 0.01
     }
     $(this).val(betChance)
@@ -93,6 +106,7 @@ $( document ).ready(function() {
     calculateWin();
   });
 
+  // login and logout button/link
   $("#login_button").click(function(e){
     e.preventDefault();
     login();
@@ -111,37 +125,32 @@ $( document ).ready(function() {
     return false;
   });
 
+  // roll the dice
   $("#roll").click(function(){
     if(loggedIn == false) {
       $("#login_modal").addClass('is-toggled');
     } else {
+
       $("#roll").hide();
       $("#rolling").show();
+
       let amount = $("#bet_amount").val();
-      let split = amount.split('.');
-      if(split[1] === undefined) {
-        split[1] = '000';
-      }
-      let decimals = split[1].length;
-      if(decimals < 3) {
-        for(i = 3; i > decimals; i--) {
-          split[1] = split[1]+'0';
-        }
-      }
-      if(split[1].length > 3) {
-        split[1] = split[1].substring(0,3);
-      }
-      amount = split[0]+'.'+split[1];
+      amount = toThreeDecimals(amount);
       if(playing_with == 'sbd') {
         amount = amount+' SBD';
       }
       if(playing_with == 'steem') {
         amount = amount+' STEEM';
       }
-      steem.broadcast.transfer(wif, user, bank, amount, '{"ui":"steemdice.net","type":"lower","number":'+$("#bet_chance").val()+'}', function(err, result) {
+
+      chance = $("#bet_chance").val();
+      steem.broadcast.transfer(wif, user, bank, amount, '{"ui":"steemdice.net","type":"lower","number":'+chance+'}', function(err, result) {
+
         $("#rolling").hide();
         $("#rolled").show();
+
         updateUser();
+
         setTimeout(
           function(){
             $("#rolled").hide();
@@ -157,16 +166,95 @@ $( document ).ready(function() {
 });
 
 
+//requests
+var proceed = function() {
+  repeatedRequests();
+  setInterval(
+    function(){
+      repeatedRequests();
+    },
+    updateInterval
+  );
+}
+
+
+var repeatedRequests = function() {
+  if(updating == false) {
+    updating = true;
+    steem.api.getDynamicGlobalProperties(function(err, result) {
+      newProperties(result);
+    });
+    steem.api.getState('/@'+bank+'/transfers', function(err, result) {
+      newBankState(result);
+    });
+
+    updateUser();
+  }
+}
+
+
+// update footer
+var newProperties = function(data) {
+  var block = data['head_block_number'];
+  var hash = data['head_block_id'];
+  $('#lastBlockHeight').html(block);
+  $('#lastBlockId').html(hash);
+  var goal = calculateGoal(hash,block);
+  if(goal == false) {
+    goal = 'Ignored';
+  }
+  $('#lastBlockGoal').html(goal);
+}
+
+
+var newBankState = function(data) {
+  var table = $('#txTable');
+  var history = data['accounts'][bank]['transfer_history'];
+  var amount = history.length;
+  for(i = amount - 26; i < amount; i++) {
+    tx = history[i];
+    // only proceed for transfers to the bank which are at least a block old
+    if(tx[1]['op'][0] == 'transfer' && tx[1]['op'][1]['from'] != bank && tx[1]['block'] < $('#lastBlockHeight').text()) {
+      // only proceed if row hasn't been added yet
+      if(!$("#bet"+tx[1]['block']+tx[1]['trx_in_block']).length) {
+        try {
+          var memo = JSON.parse(tx[1]['op'][1]['memo']);
+        }
+        catch(err) {
+          var memo = {}
+        }
+        var type = '';
+        var bet = '';
+        if(typeof memo['type'] !== 'undefined') {
+          if(memo['type'] == 'higher') {
+            type = '>';
+          } else if(memo['type'] == 'lower') {
+            type = '<';
+          } else {
+            type = 'INV';
+          }
+
+          let number = escapeHtml(memo['number']);
+          table.prepend(
+            '<tr id="bet'+tx[1]['block']+tx[1]['trx_in_block']+'" class="block'+tx[1]['block']+'"><td>'+tx[1]['op'][1]['from']+
+            '</td><td data-timestamp="'+Date.parse(tx[1]['timestamp'])+'" title="'+timesince(Date.parse(tx[1]['timestamp']))+' ago">'+tx[1]['block']+
+            '</td><td class="target'+tx[1]['block']+'"></td><td><span class="betType">'+type+'</span> <span class="betNumber">'+number+
+            '</span><span class="betAmount" style="display:none">'+tx[1]['op'][1]['amount']+'</span></td><td class="profit'+
+            tx[1]['block']+'"></td></tr>'
+          );
+        }
+      }
+      getBlock(tx[1]['block']);
+    }
+  }
+
+  updating = false;
+}
+
+
 var calculateWin = function() {
   let amount = $("#bet_amount").val();
   let chance = $("#bet_chance").val();
-  if(chance != '' && chance < 0.01) {
-    chance = 0.01;
-  }
-  if(chance > 99.99) {
-    chance = 99.99;
-  }
-  $("#bet_chance").val(chance);
   let factor = 100/chance;
   let win = (amount * factor) * (1 - houseedge);
   let maxwin = window['maxwin_'+playing_with];
@@ -185,6 +273,7 @@ var calculateWin = function() {
   }
   $("#potential_win").text(Math.round(win*1000)/1000);
 }
+
 
 var login = function() {
   loginBusy();
@@ -285,83 +374,6 @@ var setBankroll = function(coin,value) {
   }
 }
 
-//requests
-var proceed = function() {
-  repeatedRequests();
-  setInterval(
-    function(){
-      repeatedRequests();
-    },
-    updateInterval
-  );
-}
-
-var repeatedRequests = function() {
-  if(updating == false) {
-    updating = true;
-    steem.api.getDynamicGlobalProperties(function(err, result) {
-      newProperties(result);
-    });
-    steem.api.getState('/@'+bank+'/transfers', function(err, result) {
-      newBankState(result);
-    });
-
-    updateUser();
-  }
-}
-
-
-//workers
-var newProperties = function(data) {
-  var block = data['head_block_number'];
-  var hash = data['head_block_id'];
-  $('#lastBlockHeight').html(block);
-  $('#lastBlockId').html(hash);
-  var goal = calculateGoal(hash,block);
-  if(goal == false) {
-    goal = 'Ignored';
-  }
-  $('#lastBlockGoal').html(goal);
-}
-
-var newBankState = function(data) {
-  var table = $('#txTable');
-  var history = data['accounts'][bank]['transfer_history'];
-  var amount = history.length;
-  for(i = amount - 26; i < amount; i++) {
-    tx = history[i];
-    // only proceed for transfers to the bank which are at least a block old
-    if(tx[1]['op'][0] == 'transfer' && tx[1]['op'][1]['from'] != bank && tx[1]['block'] < $('#lastBlockHeight').html()) {
-      // only proceed if row hasn't been added yet
-      if(!$("#bet"+tx[1]['block']+tx[1]['trx_in_block']).length) {
-        try {
-          var memo = JSON.parse(tx[1]['op'][1]['memo']);
-        }
-        catch(err) {
-          var memo = {}
-        }
-        var type = '';
-        var bet = '';
-        if(typeof memo['type'] !== 'undefined') {
-          if(memo['type'] == 'higher') {
-            type = '>';
-          } else if(memo['type'] == 'lower') {
-            type = '<';
-          }
-          bet = '<span class="betAmount">'+tx[1]['op'][1]['amount']+'</span> <span class="betType">'+type+'</span> <span class="betNumber">'+escapeHtml(memo['number'])+'</span>';
-          table.prepend(
-            '<tr id="bet'+tx[1]['block']+tx[1]['trx_in_block']+'"><td data-timestamp="'+Date.parse(tx[1]['timestamp'])+'">'+
-            timesince(Date.parse(tx[1]['timestamp']))+' ago</td><td>'+tx[1]['block']+'</td><td>'+
-            tx[1]['op'][1]['from']+'</td><td style="display: none;">'+bet+'</td><td class="result'+tx[1]['block']+'">'+bet+'</td></tr>'
-          );
-        }
-      }
-      getBlock(tx[1]['block']);
-    }
-  }
-
-  updating = false;
-}
 
 var getBlock = function(block) {
   if(typeof doneblocks['"'+block+'"'] === 'undefined') {
@@ -373,10 +385,10 @@ var getBlock = function(block) {
       });
     }
   } else if(doneblocks['"'+block+'"'] == 1) {
-    $('.result'+block).each(function() {
-      var elem = $(this).parent().children(':first');
+    $('.profit'+block).each(function() {
+      var elem = $(this).parent().children().eq(1);
       var value = elem.data('timestamp');
-      elem.text(timesince(value)+' ago');
+      elem.attr('title',timesince(value)+' ago');
     });
   }
 }
@@ -393,69 +405,72 @@ var newBlock = function(block,hash) {
   doneblocks['"'+block+'"'] = 1;
   if(goal == false) {
     var next = block+1;
-    $(".result"+block).addClass('result'+next);
+    $(".target"+block).addClass('target'+next);
     doneblocks['"'+block+'"'] = 2;
     getBlock(next);
     return false;
   }
-  $('.result'+block).text(goal);
-  var type = $('.result'+block).prev().children('.betType').html();
-  var number = $('.result'+block).prev().children('.betNumber').html();
-  var won = 0;
-  var factor = 100;
-  var invalidBet = 0;
-  if(type == '&gt;') {
-    factor = 100-number;
-    if(number < goal) {
-      won = 1;
-    }
-  } else if(type == '&lt;') {
-    factor = 0+number;
-    if(number > goal) {
-      won = 1;
-    }
-  }
+  $('.target'+block).text(goal);
+  $(".block"+block).each(function(index){
+    var type = $(this).find(".betType").html();
+    var number = $(this).find(".betNumber").html();
+    var amount = $(this).find(".betAmount").html();
 
-  if(won == 1) {
-    $('.result'+block).addClass('won');
-  } else {
-    $('.result'+block).addClass('lost');
-  }
-
-  var hide = 0;
-  if(factor > 0 && factor < 100) {
-    var amount = $('.result'+block).prev().children('.betAmount').text();
-    var asset = amount.substring(amount.length-5,amount.length);
-    if(asset.substring(1,2) == ' ') {
-      asset = asset.substring(2);
-    }
-    var tmp = amount.substring(0,amount.length-6);
-    var win = Math.round((tmp * 100000 / (factor*1000))*1000)/1000;
-    var cssClass = 'lost';
-    if(win > window['maxwin_'+playing_with]) {
-      win = 'Bet too high';
-      hide = 1;
-      if(won == 0) {
-        cssClass = 'won';
+    var won = 0;
+    var factor = 100;
+    var invalidBet = 0;
+    if(type == '&gt;') {
+      factor = 100-number;
+      if(number < goal) {
+        won = 1;
       }
-    } else if(won == 1) {
-      cssClass = 'won';
-      win = Math.round(win*1000 * (1-houseedge) - tmp*1000) / 1000+' '+asset;
-    } else if(won == 0) {
-      win = 0 - tmp;
-      win = win+' '+asset;
+    } else if(type == '&lt;') {
+      factor = 0+number;
+      if(number > goal) {
+       won = 1;
+      }
     }
-  } else {
-    win = 'Invalid bet';
-    hide = 1;
-    cssClass = 'won';
-  }
 
-  $('.result'+block).addClass(cssClass).text(win);
-  if(hide == 1) {
-    doneblocks['"'+block+'"'] = 2;
-    $('.result'+block).parent().hide();
-  }
+    if(won == 1) {
+      $('.profit'+block).addClass('won');
+    } else {
+      $('.profit'+block).addClass('lost');
+    }
+
+    var hide = 0;
+    if(factor > 0 && factor < 100) {
+      var asset = amount.substring(amount.length-5,amount.length);
+      if(asset.substring(1,2) == ' ') {
+        asset = asset.substring(2);
+      }
+      var tmp = amount.substring(0,amount.length-6);
+      var win = Math.round((tmp * 100000 / (factor*1000))*1000)/1000;
+      var cssClass = 'lost';
+      if(win > window['maxwin_'+playing_with]) {
+        win = 'Bet too high';
+        hide = 1;
+        if(won == 0) {
+          cssClass = 'won';
+        }
+      } else if(won == 1) {
+        cssClass = 'won';
+        win = Math.round(win*1000 * (1-houseedge) - tmp*1000) / 1000+' '+asset;
+      } else if(won == 0) {
+        win = 0 - tmp;
+        win = win+' '+asset;
+      }
+    } else {
+      win = 'Invalid bet';
+      hide = 1;
+      cssClass = 'won';
+    }
+
+    $(this).find('.profit'+block).addClass(cssClass).text(win);
+    if(hide == 1) {
+      doneblocks['"'+block+'"'] = 2;
+      $this().hide();
+    }
+  });
 }
 
 // calculate the result for a block hash
@@ -489,7 +504,9 @@ function escapeHtml(string) {
 
 // time ago
 function timesince(date) {
-  var seconds = Math.floor((new Date() - date) / 1000);
+  var now = new Date();
+  var off = now.getTimezoneOffset()*60*1000;
+  var seconds = Math.floor(((now - date) + off) / 1000);
   var interval = Math.floor(seconds / 31536000);
 
   if (interval > 1) {
@@ -577,4 +594,23 @@ function bs58decode(string) {
     }
 
     return bytes.reverse()
+}
+
+function toThreeDecimals(amount) {
+  let split = amount.split('.');
+  if(split[1] === undefined) {
+    split[1] = '000';
+  }
+  let decimals = split[1].length;
+  if(decimals < 3) {
+    for(i = 3; i > decimals; i--) {
+      split[1] = split[1]+'0';
+    }
+  }
+  if(split[1].length > 3) {
+    split[1] = split[1].substring(0,3);
+  }
+  amount = split[0]+'.'+split[1];
+
+  return amount;
 }
