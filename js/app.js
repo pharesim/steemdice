@@ -412,6 +412,8 @@ var newBlock = function(block,hash) {
   if(goal == false) {
     var next = block+1;
     $(".target"+block).addClass('target'+next);
+    $(".block"+block).addClass('block'+next);
+    $(".profit"+block).addClass('profit'+next);
     doneblocks['"'+block+'"'] = 2;
     getBlock(next);
     return false;
@@ -438,9 +440,9 @@ var newBlock = function(block,hash) {
     }
 
     if(won == 1) {
-      $('.profit'+block).addClass('won');
+      $(this).find('.profit'+block).addClass('won');
     } else {
-      $('.profit'+block).addClass('lost');
+      $(this).find('.profit'+block).addClass('lost');
     }
 
     var hide = 0;
