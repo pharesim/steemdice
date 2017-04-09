@@ -426,7 +426,6 @@ var newBlock = function(block,hash) {
 
     var won = 0;
     var factor = 100;
-    var invalidBet = 0;
     if(type == '&gt;') {
       factor = 100-number;
       if(number < goal) {
