@@ -401,7 +401,7 @@ td {
 }
 
 
-#logged_in_message, #busy_indicator, #login_error, #rolling, #rolled {
+#logged_in_message, #busy_indicator, #login_error, #rolling, #rolled, #roll_error {
   display: none;
 }
 </style>
@@ -472,6 +472,10 @@ td {
       <button class="large" id="roll">Roll Dice</button>
       <button class="large" disabled id="rolling"><span class="animation--pulse">rolling...</span></button>
       <button class="large" disabled id="rolled">Bet placed!</button>
+      <div id="roll_error">
+        <button class="large" disabled>Error placing bet!</button>
+        <div id="roll_error_reason"></div>
+      </div>
     </div>
 
     <div class="latest-rolls">

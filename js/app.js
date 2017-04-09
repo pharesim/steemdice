@@ -147,13 +147,19 @@ $( document ).ready(function() {
       steem.broadcast.transfer(wif, user, bank, amount, '{"ui":"steemdice.net","type":"lower","number":'+chance+'}', function(err, result) {
 
         $("#rolling").hide();
-        $("#rolled").show();
+        if(err !== 'undefined') {
+          $("#roll_error").show();
+          alert(err);
+        } else {
+          $("#rolled").show();
+        }
 
         updateUser();
 
         setTimeout(
           function(){
             $("#rolled").hide();
+            $("#roll_error").hide();
             $("#roll").show();
           },
           4000
