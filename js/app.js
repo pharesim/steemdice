@@ -439,12 +439,6 @@ var newBlock = function(block,hash) {
       }
     }
 
-    if(won == 1) {
-      $(this).find('.profit'+block).addClass('won');
-    } else {
-      $(this).find('.profit'+block).addClass('lost');
-    }
-
     var hide = 0;
     if(factor > 0 && factor < 100) {
       var asset = amount.substring(amount.length-5,amount.length);
