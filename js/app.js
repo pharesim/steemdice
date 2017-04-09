@@ -439,7 +439,9 @@ var newBlock = function(block,hash) {
       }
     }
 
-    var hide = 0;
+    var hide = 1;
+    var cssClass = 'lost';
+    var win = 'Invalid bet';
     if(factor > 0 && factor < 100) {
       var asset = amount.substring(amount.length-5,amount.length);
       if(asset.substring(1,2) == ' ') {
@@ -447,24 +449,20 @@ var newBlock = function(block,hash) {
       }
       var tmp = amount.substring(0,amount.length-6);
       var win = Math.round((tmp * 100000 / (factor*1000))*1000)/1000;
-      var cssClass = 'lost';
       if(win > window['maxwin_'+playing_with]) {
         win = 'Bet too high';
-        hide = 1;
-        if(won == 0) {
+        if(won == 1) {
           cssClass = 'won';
         }
       } else if(won == 1) {
         cssClass = 'won';
         win = Math.round(win*1000 * (1-houseedge) - tmp*1000) / 1000+' '+asset;
+        hide = 0;
       } else if(won == 0) {
         win = 0 - tmp;
         win = win+' '+asset;
+        hide = 0;
       }
-    } else {
-      win = 'Invalid bet';
-      hide = 1;
-      cssClass = 'won';
     }
 
     $(this).find('.profit'+block).addClass(cssClass).text(win);
