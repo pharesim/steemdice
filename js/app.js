@@ -147,7 +147,7 @@ $( document ).ready(function() {
       steem.broadcast.transfer(wif, user, bank, amount, '{"ui":"steemdice.net","type":"lower","number":'+chance+'}', function(err, result) {
 
         $("#rolling").hide();
-        if(err !== 'undefined') {
+        if(err !== null) {
           $("#roll_error").show();
           alert(err);
         } else {
