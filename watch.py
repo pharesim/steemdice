@@ -36,8 +36,8 @@ def main():
       block = None
 
     if block != None:
-      for txs in block['transactions']:
-        for (i,tx) in enumerate(txs['operations']):
+      for i, txs in enumerate(block['transactions']):
+        for (j,tx) in enumerate(txs['operations']):
           if tx[0] == 'transfer' and tx[1]['to'] == watching:
             asset = getAssetFromAmount(tx[1]['amount'])
             if asset == 'STEEM':
