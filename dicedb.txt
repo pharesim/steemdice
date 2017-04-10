@@ -13,5 +13,5 @@ CREATE TABLE percentagebets (
   result NUMERIC,
   won NUMERIC,
   processed BOOL,
-  UNIQUE (block, txid)
+  PRIMARY KEY (block, txid)
 );
