@@ -455,7 +455,7 @@ var newBlock = function(block,hash) {
         }
       } else if(won == 1) {
         cssClass = 'won';
-        win = Math.round(win*1000 * (1-houseedge) - tmp*1000) / 1000+' '+asset;
+        win = Math.round(win*1000 - tmp*1000) / 1000+' '+asset;
         hide = 0;
       } else if(won == 0) {
         win = 0 - tmp;
