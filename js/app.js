@@ -447,7 +447,7 @@ var newBlock = function(block,hash) {
         asset = asset.substring(2);
       }
       var tmp = amount.substring(0,amount.length-6);
-      var win = Math.round((tmp * 100000 / (factor*1000))*1000)/1000;
+      var win = Math.round((tmp * 100000 / (factor*1000)) * (1-houseedge) *1000)/1000;
       if(win > window['maxwin_'+playing_with]) {
         win = 'Bet too high';
         if(won == 1) {
