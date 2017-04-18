@@ -146,7 +146,8 @@ def main():
           print('ERROR SAVING TO DATABASE!')
 
   conn.commit()
-  return True
+
+  return getblock
 
 def transfer(sender,recipient,amount,memo):
   expiration = transactions.formatTimeFromNow(60)
@@ -174,10 +175,22 @@ def getAssetFromAmount(amount):
     asset = amount[-3:]
   return asset
 
+
 if __name__ == "__main__":
-  while True:
-    print('checking...')
-    main()
+  lastblock = 0
+  blockstall = 0
+  while True: 
+    block = main()
+    if block == lastblock:
+      blockstall++
+    else:
+      blockstall = 0  
+      lastblock = block
+
+    if blockstall > 5:
+      sys.exit()
+
     time.sleep(2)
+
 
 conn.close()
