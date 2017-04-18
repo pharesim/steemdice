@@ -182,12 +182,12 @@ if __name__ == "__main__":
   while True: 
     block = main()
     if block == lastblock:
-      blockstall++
+      blockstall = blockstall + 1
     else:
       blockstall = 0  
       lastblock = block
 
-    if blockstall > 5:
+    if blockstall > 3:
       sys.exit()
 
     time.sleep(2)
