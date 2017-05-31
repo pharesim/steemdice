@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://fonts.googleapis.com/css?family=Montserrat:500,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style type="text/css">
 
 html {
@@ -30,9 +31,10 @@ body, html {
 }
 
 html {
-  font-size: 18px;
-  line-height: 1.3;
+  font-size: 20px;
+  line-height: 1.5;
 }
+
 
 html,
 input,
@@ -47,7 +49,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 2rem;
+  padding: 1.5rem;
 }
 
 body,
@@ -59,6 +61,7 @@ a {
   position: relative;
   color: #5184f6;
   text-decoration: none;
+
 }
 
 a:after {
@@ -67,14 +70,18 @@ a:after {
   right: 0;
   display: block;
   content: "";
-  border-bottom: .2em solid;
-  bottom: -.1em;
+  /*border-bottom: 2px solid;*/
+  bottom: 0;
   width: 100%;
 }
 
 a,
 button {
   transition: all 250ms;
+}
+
+p {
+  /*margin-bottom: .5rem;*/
 }
 
 
@@ -106,6 +113,7 @@ input[type="text"] {
 
 }
 
+.button,
 button {
   width: 100%;
   padding: 1rem;
@@ -113,7 +121,7 @@ button {
 
   background: #5184f6;
   color: #fff;
-  cursor: hand;
+  cursor: pointer;
 
   text-transform: uppercase;;
 }
@@ -124,14 +132,16 @@ button:hover {
 
 button[disabled] {
   cursor: default;
+  color: inherit;
+  background: #ddd;
 }
 
 button[disabled]:hover {
-  background: #5184f6;
+  background: #ddd;
 }
 
 h1 {
-  font-size: 22px;
+  font-size: 1.2rem;
 }
 
 table {
@@ -158,6 +168,17 @@ td {
 .page-logo {
   text-transform: uppercase;
   letter-spacing: .25em;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.login {
+  margin-bottom: .25rem;
+}
+
+.signup {
+  margin-top: 0;
+  margin-bottom: 1rem;
 }
 
 .page-header {
@@ -166,6 +187,7 @@ td {
 
 .page-main {
   /*min-width: 50rem;*/
+  /*transform: translateY(-5%);*/
 }
 
 .page-footer :last-child {
@@ -176,13 +198,14 @@ td {
   opacity: .75;
   height: 130px;
   overflow-y: auto;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 
 .bankroll {
   text-align: center;
   position: relative;
+  margin-bottom: .5rem;
 }
 
   .bankroll__movement {
@@ -200,6 +223,14 @@ td {
   .bankroll__movement--negative {
     color: #dd593f;
     animation: flyOut 2s forwards;
+  }
+
+  .won {
+    color: #00d067;
+  }
+
+  .lost {
+    color: #dd593f;
   }
 
   @keyframes flyOut {
@@ -232,6 +263,23 @@ td {
     }
   }
 
+.bankroll-switch {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+  .bankroll-switch__icon {
+    vertical-align: -25%;
+    font-size: 90%;
+  }
+.game-limit {
+  display: block;
+  opacity: .75;
+  text-align: center;
+  position: relative;
+  margin-bottom: .5rem;
+}
+
 .animation--pulse {
   animation: pulse 1s alternate infinite;
 }
@@ -256,11 +304,15 @@ td {
 }
 
 .small {
-  font-size: .8em;
+  font-size: 80%;
+}
+
+.smaller {
+  font-size: 70%;
 }
 
 .large {
-  font-size: 1.15em;
+  font-size: 115%;
   /*font-weight: bold;*/
 }
 
@@ -296,6 +348,8 @@ td {
 
 
 @media (max-width: 25rem) {
+
+
   body {
     padding: 1rem;
   }
@@ -370,21 +424,20 @@ td {
   visibility: hidden;
 
   background: rgba(0,0,0,0);
-  transition: visibility 350ms, background 350ms;
+  transition: visibility 150ms, background 150ms;
 }
 
 .modal__inner {
   position: fixed;
   left: 50%;
-  top: 40%;
+  top: 45%;
   transform: translate(-50%, -50%);
 
   width: 15rem;
   max-width: 100%;
 
   text-align: center;
-
-  transition: 150ms top;
+  opacity: 0;
 }
 
 .modal__inner > :first-child {
@@ -395,10 +448,15 @@ td {
 .modal.is-toggled {
   visibility: visible;
   background: rgba(0,0,0,.70);
+  /*transition: none;  */
 }
 
 .modal.is-toggled .modal__inner {
+  opacity: 1;
   top: 50%;
+  transition: 150ms opacity, 150ms top;
+  /*visibiliy: visible !important;*/
+
 }
 
 #about_modal .modal__inner {
@@ -422,37 +480,37 @@ td {
 
     <h1 class="page-logo">steemdice</h1>
 
-    <a href="#login_modal" data-toggle="login_modal" id="login_link">Log in with your steem account</a>
-    <div id="signup_link">
-      Not a steem user yet?
-      <a href="https://steemit.com/enter_email">Sign up!</a>
-    </div>
+    <div class="login" id="login_link"><i class="material-icons small">vpn_key</i> <a href="#login_modal" data-toggle="login_modal">Log in with your steem account</a></div>
+
+    <p id="signup_link" class="small signup">
+      <a href="https://steemit.com/enter_email">New to steem?</a>
+    </p>
 
     <span id="logged_in_message">
       Logged in as <span class="username"></span><br />
-      <a href="#logout" id="logout">Logout</a>
+      <a href="#logout" id="logout" class="small">Logout</a>
     </span>
 
   </header>
 
   <main class="page-main">
 
-    <p class="bankroll">
-      <span class="bankroll__total large">
-        <span id="bankroll">
+    <div class="bankroll">
+      <span class="bankroll__total ">
+        <span id="bankroll" class="large">
           Your Bankroll:
           <span class="play_with_steem"><span id="bankroll_steem">0 Steem</span></span>
           <span class="play_with_sbd"><span id="bankroll_sbd">0 SBD</span></span>
-          <br />
         </span>
-        Game limit: 
-        <span class="play_with_sbd"><span id="max_win_sbd"></span> SBD</span>
-        <span class="play_with_steem"><span id="max_win_steem"></span> Steem</span>
-      </span><br>
+      <span id="bankroll_movement_container"></span>
+    </div>
+
+
+    <div class="bankroll-switch">
+      <i class="material-icons bankroll-switch__icon">cached</i>
       <a href="#" id="switch_to_sbd" class="small play_with_steem">play with SBD</a>
       <a href="#" id="switch_to_steem" class="small play_with_sbd">play with Steem</a>
-      <span id="bankroll_movement_container"></span>
-    </p>
+    </div>
 
     <div class="box">
 
@@ -477,7 +535,7 @@ td {
         If you win, you receive <span id="potential_win">0.196</span> <span class="play_with_steem">Steem</span><span class="play_with_sbd">SBD</span>
       </p>
 
-      <button class="large" id="roll">Roll Dice</button>
+      <button class="large" id="roll">Roll The Dice</button>
       <button class="large" disabled id="rolling"><span class="animation--pulse">rolling...</span></button>
       <button class="large" disabled id="rolled">Bet placed!</button>
       <div id="roll_error">
@@ -486,8 +544,14 @@ td {
       </div>
     </div>
 
+    <span class="game-limit smaller">
+      Game limit:
+      <span class="play_with_sbd"><span id="max_win_sbd"></span> SBD</span>
+      <span class="play_with_steem"><span id="max_win_steem"></span> Steem</span>
+    </span>
+
     <div class="latest-rolls">
-      <table class="small">
+      <table class="smaller">
         <thead>
           <tr>
             <th>User</th>
@@ -504,7 +568,7 @@ td {
 
   </main>
 
-  <footer class="page-footer text-center small">
+  <footer class="page-footer text-center smaller">
     <p style="opacity: .5">Last Roll: Block <span id="lastBlockHeight"></span> | ID <span id="lastBlockId"></span> | Result <span id="lastBlockGoal"></span></p>
     <p>
       <a href="#about" data-toggle="about_modal">about</a> |
@@ -534,7 +598,7 @@ td {
 
   <div id="about_modal" class="modal" data-toggle="about_modal">
     <div class="modal__inner box">
-      
+
       <h2>About</h2>
 
       <p>SteemDice is a provably fair, blockchain based gambling application.</p>
@@ -559,7 +623,7 @@ td {
           SteemDice does not manage its own userbase or wallets. Instead, it works as a single purpose wallet to your steem account.
         </div>
       </p>
-      
+
       <p>
         <strong>Isn't this unsafe?</strong>
         <div class="small">
