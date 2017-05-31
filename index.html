@@ -174,7 +174,7 @@ td {
 
 .latest-rolls {
   opacity: .75;
-  height: 65px;
+  height: 130px;
   overflow-y: auto;
   margin-bottom: 1rem;
 }
@@ -401,6 +401,17 @@ td {
   top: 50%;
 }
 
+#about_modal .modal__inner {
+  width: 30rem;
+  max-height: 600px;
+  overflow: auto;
+  text-align: left;
+}
+
+
+#logged_in_message, #busy_indicator, #login_error, #rolling, #rolled, #roll_error {
+  display: none;
+}
 </style>
 
 </head>
@@ -411,7 +422,16 @@ td {
 
     <h1 class="page-logo">steemdice</h1>
 
-    <a href="#login_modal" data-toggle="login_modal">login with your steem account</a>
+    <a href="#login_modal" data-toggle="login_modal" id="login_link">Log in with your steem account</a>
+    <div id="signup_link">
+      Not a steem user yet?
+      <a href="https://steemit.com/enter_email">Sign up!</a>
+    </div>
+
+    <span id="logged_in_message">
+      Logged in as <span class="username"></span><br />
+      <a href="#logout" id="logout">Logout</a>
+    </span>
 
   </header>
 
@@ -419,11 +439,17 @@ td {
 
     <p class="bankroll">
       <span class="bankroll__total large">
-        Your Bankroll:
-        <span class="play_with_steem"><span id="bankroll_steem">0</span> Steem</span>
-        <span class="play_with_sbd"><span id="bankroll_sbd">0</span> SD</span>
+        <span id="bankroll">
+          Your Bankroll:
+          <span class="play_with_steem"><span id="bankroll_steem">0 Steem</span></span>
+          <span class="play_with_sbd"><span id="bankroll_sbd">0 SBD</span></span>
+          <br />
+        </span>
+        Game limit: 
+        <span class="play_with_sbd"><span id="max_win_sbd"></span> SBD</span>
+        <span class="play_with_steem"><span id="max_win_steem"></span> Steem</span>
       </span><br>
-      <a href="#" id="switch_to_sbd" class="small play_with_steem">play with SD</a>
+      <a href="#" id="switch_to_sbd" class="small play_with_steem">play with SBD</a>
       <a href="#" id="switch_to_steem" class="small play_with_sbd">play with Steem</a>
       <span id="bankroll_movement_container"></span>
     </p>
@@ -434,33 +460,40 @@ td {
         <label class="u-1-2">
           <span class="label__text">Bet Amount</span>
           <span class="input-double-container">
-            <input class="large++ strong" id="bet_amount" value="1">
+            <input class="large++ strong" id="bet_amount" value="0.1">
             <button id="double_bet">2&times;</button>
           </span>
         </label>
 
         <label class="u-1-2">
           <span class="label__text">Win Chance</span>
-          <input class="large++ strong" value="50%">
+          <span class="input-double-container">
+            <input class="large++ strong" id="bet_chance" value="50">
+            <button disabled="disabled">%</button>
         </label>
       </div>
 
       <p class="text-center">
-        If you win, you receive <span id="potential_win">1.485</span> <span class="play_with_steem">Steem</span><span class="play_with_sbd">SD</span>
+        If you win, you receive <span id="potential_win">0.196</span> <span class="play_with_steem">Steem</span><span class="play_with_sbd">SBD</span>
       </p>
 
-      <button class="large">Roll Dice</button>
-      <!-- While processing -->
-      <!-- <button class="large" disabled><span class="animation--pulse">rolling...</span></button> -->
+      <button class="large" id="roll">Roll Dice</button>
+      <button class="large" disabled id="rolling"><span class="animation--pulse">rolling...</span></button>
+      <button class="large" disabled id="rolled">Bet placed!</button>
+      <div id="roll_error">
+        <button class="large" disabled>Error placing bet!</button>
+        <div id="roll_error_reason"></div>
+      </div>
     </div>
 
     <div class="latest-rolls">
       <table class="small">
         <thead>
           <tr>
-            <th>Time</th>
-            <th>Block</th>
             <th>User</th>
+            <th>Block</th>
+            <th>Result</th>
+            <th>Bet</th>
             <th>Profit</th>
           </tr>
         </thead>
@@ -472,8 +505,11 @@ td {
   </main>
 
   <footer class="page-footer text-center small">
-    <p>created by <a href="https://steemit.com/witness-category/@pharesim/witness-post" target="_blank">pharesim</a> | <a href="mailto:pharesim@protonmail.com">support</a></p>
     <p style="opacity: .5">Last Roll: Block <span id="lastBlockHeight"></span> | ID <span id="lastBlockId"></span> | Result <span id="lastBlockGoal"></span></p>
+    <p>
+      <a href="#about" data-toggle="about_modal">about</a> |
+      <a href="https://github.com/pharesim/steemdice" target="_blank">github</a> |
+      <a href="mailto:pharesim@protonmail.com">support</a></p>
   </footer>
 
   <div id="login_modal" class="modal" data-toggle="login_modal">
@@ -489,17 +525,70 @@ td {
         <label for="username">Password or WIF</label>
         <input type="password" name="password" id="password" />
       </p>
+      <div id="login_error" class="error">Error logging in. Please try again.</div>
       <button id="login_button">Login</button>
+      <span id="busy_indicator">Logging in...</span>
 
     </div>
   </div>
 
-  <!-- <div class="toasting toasting--show">
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-  </div> -->
+  <div id="about_modal" class="modal" data-toggle="about_modal">
+    <div class="modal__inner box">
+      
+      <h2>About</h2>
+
+      <p>SteemDice is a provably fair, blockchain based gambling application.</p>
+
+      <p>
+        <strong>How can you prove that the games are fair?</strong>
+        <div class="small">
+          The transaction containing your bet defines the outcome. The result is calculated from the id of the block after.
+        </div>
+      </p>
+
+      <p>
+        <strong>How can I verify the result myself?</strong>
+        <div class="small">
+          Take the last 5 characters of the block ID and convert them to a decimal integer. If this number is greater than 999,999 use the next block's ID. Divide the modulo 10,000 by 100 and you get the target.
+        </div>
+      </p>
+
+      <p>
+        <strong>Why do I need to give you my active private key?</strong>
+        <div class="small">
+          SteemDice does not manage its own userbase or wallets. Instead, it works as a single purpose wallet to your steem account.
+        </div>
+      </p>
+      
+      <p>
+        <strong>Isn't this unsafe?</strong>
+        <div class="small">
+          Like on steemit.com, your key is not sent to a server. Transactions are signed in your browser, and only the hashed signature is transmitted to a steemd node to broadcast it on the steem network. No second party will ever get your key!
+        </div>
+      </p>
+
+      <p>
+        <strong>What else do you do to protect my key?</strong>
+        <div class="small">
+          Instead of hosting the application on our own servers, we chose github pages. Any attacker making himself able to change the code, will transparently show what he did with a new commit on github. Malicious activity can be detected immediately and by anyone.
+        </div>
+      </p>
+
+      <p>
+        <strong>What can I do if I'm still unsure about the safety of my key?</strong>
+        <div class="small">
+          Save the page, or clone/download it from github. It works locally, on any device!
+        </div>
+      </p>
+    </div>
+  </div>
+
+  <div id="toaster" class="toasting toasting--show">
+    Welcome to SteemDice! <a href="#login_modal" data-toggle="login_modal" id="login_link_toaster">Log in</a> to your Steem account with your active authority to play (<a href="#about_modal" data-toggle="about_modal">?</a>)
+  </div>
 
   <script type="text/javascript" src="js/jquery.min.js"></script>
-  <script type="text/javascript" src="js/steem.fabien.js"></script>
+  <script type="text/javascript" src="js/steem.min.js"></script>
   <script type="text/javascript" src="js/app.js"></script>
 </body>
 </html>
