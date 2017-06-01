@@ -21,7 +21,7 @@ var wif = '';
 
 // main function
 $( document ).ready(function() {
-  
+
   // fill in variables
   $("#houseEdge").text(houseedge * 100);
   $("#max_win_steem").text(maxwin_steem);
@@ -53,6 +53,24 @@ $( document ).ready(function() {
     }
   });
 
+  // Mousewheel Support for Bet Amount
+  $("#bet_amount").mousewheel(function(turn, delta) {
+    let oldbet = $('#bet_amount').val();
+
+    // Mousewheel up
+    if (delta == 1) {
+      $("#bet_amount").val(oldbet*2);
+
+    // Mousewheel down
+    } else {
+      $("#bet_amount").val(oldbet/2);
+    }
+
+    $("#bet_amount").change();
+
+    calculateWin();
+  });
+
   // check bet amount
   $("#bet_amount").change(function(e){
     let betAmount = $(this).val();
@@ -81,7 +99,7 @@ $( document ).ready(function() {
       }
       betAmount = betAmount+"."+check[1];
     }
-    
+
     $(this).val(betAmount);
 
     calculateWin();
@@ -101,10 +119,39 @@ $( document ).ready(function() {
     if(betChance < 0.01) {
       betChance = 0.01
     }
-    $(this).val(betChance)
+
+    $(this).val(betChance);
 
     calculateWin();
   });
+
+  // mousewheel support for bet chance
+  $("#bet_chance").mousewheel(function(turn, delta) {
+    let betChance = $(this).val();
+
+    betChance = betChance.replace(',','.');
+
+    // Mousewheel up
+    if (delta == 1) {
+      betChance++;
+
+    // Mousewheel down
+    } else {
+      betChance--;
+    }
+
+    if(betChance > 99.99) {
+      betChance = 99.99;
+    }
+    if(betChance < 0.01) {
+      betChance = 0.01
+    }
+
+    $(this).val(betChance);
+
+    calculateWin();
+  });
+
 
   // login and logout button/link
   $("#login_button").click(function(e){
@@ -115,6 +162,8 @@ $( document ).ready(function() {
     e.preventDefault();
     logout();
   });
+
+
 
   // Generic Toggle
   // Add .is-toggled to target element
@@ -536,7 +585,7 @@ function bankrollModified(sign, amount) {
   }
 
   amount = Math.round(amount*1000)/1000;
-  
+
   $("#bankroll_movement_container").html('<strong class="bankroll__movement bankroll__movement--'+direction+'">'+sign+amount+'</strong>');
   setTimeout(function(){
     $("#bankroll_movement_container").html("");
@@ -545,7 +594,7 @@ function bankrollModified(sign, amount) {
 
 
 
-function fromWif(_private_wif) {        
+function fromWif(_private_wif) {
     var private_wif = bs58decode(_private_wif);
     var private_key = private_wif.slice(0, -4);
     private_key = private_key.slice(1);
