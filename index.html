@@ -27,7 +27,7 @@ html {
 body, html {
   margin: 0;
   padding: 0;
-  height: 100%;
+  min-height: 100%;
 }
 
 html {
@@ -272,12 +272,13 @@ td {
     vertical-align: -25%;
     font-size: 90%;
   }
+
 .game-limit {
   display: block;
   opacity: .75;
   text-align: center;
   position: relative;
-  margin-bottom: .5rem;
+  margin-bottom: .75rem;
 }
 
 .animation--pulse {
@@ -350,11 +351,16 @@ td {
 @media (max-width: 25rem) {
 
 
+  html {
+    font-size: 16px;
+  }
+
+
   body {
     padding: 1rem;
   }
 
-  .box(:not[.modal__inner]) {
+  .box:not(.modal__inner) {
     margin-left: -1rem;
     margin-right: -1rem;
   }
@@ -367,7 +373,8 @@ td {
 .toasting {
   position: fixed;
   z-index: 2;
-  max-width: 25rem;
+  width: 25rem;
+  max-width: 100%;
   background: #fff;
   left: 50%;
   bottom: 0;
