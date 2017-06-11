@@ -338,27 +338,6 @@ td {
 }
 
 
-@media (max-width: 30rem) {
-
-
-  html {
-    font-size: 16px;
-  }
-
-
-  body {
-    padding: 1rem;
-  }
-
-  .box:not(.modal__inner) {
-    margin-left: -1rem;
-    margin-right: -1rem;
-  }
-
-  .latest-rolls {
-    /*padding: 0 1.75rem;*/
-  }
-}
 
 .toasting {
   position: fixed;
@@ -409,6 +388,8 @@ td {
   padding: 0;
   text-align: center;
 }
+
+
 
 .modal {
   position: fixed;
@@ -466,4 +447,30 @@ td {
 
 #logged_in_message, #busy_indicator, #login_error, #rolling, #rolled, #roll_error {
   display: none;
+}
+
+@media (max-width: 30rem) {
+
+
+  html {
+    font-size: 16px;
+  }
+
+
+  body {
+    padding: 1rem;
+  }
+
+  .box:not(.modal__inner) {
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+
+  .latest-rolls {
+    /*padding: 0 1.75rem;*/
+  }
+
+  .input-double-container button {
+    width: 40px;
+  }
 }
