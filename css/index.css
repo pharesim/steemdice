@@ -161,8 +161,8 @@ td {
   letter-spacing: .25em;
   margin-top: 0;
   margin-bottom: 1rem;
-  background: url(../img/steemdice_logo_bluedice.svg) no-repeat left 0;
-  background-size: 12.25%;
+  background: url(../img/steemdice_logo_bluedice.svg) no-repeat left .05rem;
+  background-size: 12%;
   padding-left: 1.8rem;
 }
 
