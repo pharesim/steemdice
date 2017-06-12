@@ -156,10 +156,14 @@ td {
 }
 
 .page-logo {
+  display: inline-block;
   text-transform: uppercase;
   letter-spacing: .25em;
   margin-top: 0;
   margin-bottom: 1rem;
+  background: url(../img/steemdice_logo_bluedice.svg) no-repeat left 0;
+  background-size: 12%;
+  padding-left: 1.7rem;
 }
 
 .login {
