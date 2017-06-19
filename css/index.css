@@ -264,7 +264,7 @@ td {
 
   .bankroll-switch__icon {
     vertical-align: -25%;
-    font-size: 90%;
+    font-size: 80%;
   }
 
 .game-limit {
@@ -272,7 +272,7 @@ td {
   opacity: .75;
   text-align: center;
   position: relative;
-  margin-bottom: .75rem;
+  /*margin-bottom: .75rem;*/
 }
 
 .animation--pulse {
