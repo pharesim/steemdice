@@ -93,6 +93,7 @@ $( document ).ready(function() {
     betAmount = String(betAmount).replace(',','.');
     let check = betAmount.split('.');
     betAmount = check[0];
+    if(betAmount == '') { betAmount = 0; }
     if(check[1] !== undefined) {
       if(check[1].length > 3) {
         check[1] = check[1].substring(0,3);
