@@ -4,7 +4,7 @@ var houseedge = 0.02;
 var maxwin_steem = 100;
 var maxwin_sbd = 25;
 
-var steemws = 'ws://steemd.pevo.science:8090';
+var steemws = 'wss://steemd.steemit.com';
 
 // display
 var updateInterval = 3000;
