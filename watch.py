@@ -129,12 +129,12 @@ def main():
           won[1] = won[1]+'0'
         won = won[0]+'.'+won[1]
         try:
-          transfer(watching,user,won+" "+asset,'Congratulations, you won! Your bet: '+details['type']+' '+str(details['number'])+'; Result: '+str(result)+' (Block '+str(block))
+          transfer(watching,user,won+" "+asset,'Congratulations, you won! Your bet: '+details['type']+' '+str(details['number'])+'; Result: '+str(result)+' (Block '+str(block)+')')
           processed = True
         except:
           print('ERROR SENDING MONEY')
       elif won == 0 and amount > 0.003:
-        transfer(watching,user,'0.001 '+asset,'You lost! Your bet: '+details['type']+' '+str(details['number'])+'; Result: '+str(result)+' (Block '+str(block))
+        transfer(watching,user,'0.001 '+asset,'You lost! Your bet: '+details['type']+' '+str(details['number'])+'; Result: '+str(result)+' (Block '+str(block)+')')
 
       unsaved = 1
       while unsaved == 1:
