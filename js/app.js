@@ -4,6 +4,8 @@ var houseedge = 0.02;
 var maxwin_steem = 100;
 var maxwin_sbd = 25;
 
+var steemws = 'ws://steemd.pevo.science:8090';
+
 // display
 var updateInterval = 3000;
 var playing_with = 'steem';
@@ -22,6 +24,8 @@ var wif = '';
 // main function
 $( document ).ready(function() {
 
+  steem.config.set('websocket',steemws);
+  
   // fill in variables
   $("#houseEdge").text(houseedge * 100);
   $("#max_win_steem").text(maxwin_steem);
