@@ -67,7 +67,7 @@ def main():
                     c.execute('''INSERT OR IGNORE INTO percentagebets (block, txid, user, amount, bet, asset) VALUES (?,?,?,?,?,?)''', (getblock, i, sender, amount, memo, asset))
                 except:
                   print('ERROR INSERTING BET')
-            elif memo != 'funding' and sender != 'radiosteem':
+            elif memo != 'funding':
                 transfer(watching,sender,tx[1]['amount'],'Your bet was invalid')
 
       getblock = getblock + 1
