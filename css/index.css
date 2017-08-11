@@ -357,7 +357,7 @@ td {
 }
 
 .toasting--show {
-  animation: flyOutBottom 5s;
+  animation: flyOutBottom 10s;
 }
 
 @keyframes flyOutBottom {
