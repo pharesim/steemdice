@@ -185,7 +185,6 @@ td {
 }
 
 .page-footer :last-child {
-  margin-bottom: 0;
 }
 
 .latest-rolls {
@@ -354,6 +353,15 @@ td {
   padding: 1rem;
   border-top: 3px solid #5184f6;
   transform: translate(-50%, 100%);
+  /*font-size: 80%; */
+}
+
+.toasting p {
+  margin-top: 0;
+}
+
+.toasting :last-child {
+  margin-bottom: 0;
 }
 
 .toasting--show {
