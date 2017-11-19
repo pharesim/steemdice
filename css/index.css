@@ -170,6 +170,10 @@ td {
   margin-bottom: .25rem;
 }
 
+.logged-in {
+  margin-bottom: .25rem;
+}
+
 .signup {
   margin-top: 0;
   margin-bottom: 1rem;
@@ -198,7 +202,7 @@ td {
 .bankroll {
   text-align: center;
   position: relative;
-  margin-bottom: .5rem;
+  margin-bottom: 1rem;
 }
 
   .bankroll__movement {
@@ -457,7 +461,7 @@ td {
 }
 
 
-#logged_in_message, #busy_indicator, #login_error, #rolling, #rolled, #roll_error {
+#logged_in_message, #busy_indicator, #login_error, #rolling, #rolled, #roll_error, #insufficient_funds {
   display: none;
 }
 

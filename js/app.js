@@ -180,6 +180,8 @@ $( document ).ready(function() {
   });
 
   // roll the dice
+  
+  
   $("#roll").click(function(){
     if(loggedIn == false) {
       $("#login_modal").addClass('is-toggled');

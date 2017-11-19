@@ -26,9 +26,8 @@
       <a href="https://steemit.com/enter_email">New to steem?</a>
     </p>
 
-    <span id="logged_in_message">
-      Logged in as <span class="username"></span><br />
-      <a href="#logout" id="logout" class="small">Logout</a>
+    <span id="logged_in_message" class="logged-in small">
+      Logged in as <span class="username"></span> | <a href="#logout" id="logout">Logout</a>
     </span>
 
   </header>
@@ -71,6 +70,7 @@
       <button class="large" id="roll">Roll The Dice</button>
       <button class="large" disabled id="rolling"><span class="animation--pulse">rolling...</span></button>
       <button class="large" disabled id="rolled">Bet placed!</button>
+      <button class="large" disabled id="insufficient_funds">Not enough <span class="play_with_steem">Steem</span><span class="play_with_sbd">SBD</span></button>
       <div id="roll_error">
         <button class="large" disabled>Error placing bet!</button>
         <div id="roll_error_reason"></div>
