@@ -1,4 +1,5 @@
 // config
+emitter.setMaxListeners(0);
 var bank = 'steemdice1';
 var houseedge = 0.02;
 var maxwin_steem = 100;
