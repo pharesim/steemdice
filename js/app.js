@@ -1,5 +1,4 @@
 // config
-emitter.setMaxListeners(0);
 var bank = 'steemdice1';
 var houseedge = 0.02;
 var maxwin_steem = 100;
@@ -26,7 +25,7 @@ var wif = '';
 $( document ).ready(function() {
 
   steem.config.set('websocket',steemws);
-  
+  steem.setMaxListeners(0);
   // fill in variables
   $("#houseEdge").text(houseedge * 100);
   $("#max_win_steem").text(maxwin_steem);
