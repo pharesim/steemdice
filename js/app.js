@@ -276,7 +276,7 @@ var newBankState = function(data) {
   for(i = amount - 26; i < amount; i++) {
     tx = history[i];
     // only proceed for transfers to the bank which are at least a block old
-    if(tx[1]['op'][0] == 'transfer' && tx[1]['op'][1]['from'] != bank && tx[1]['op'][1]['from'] != 'minnowbooster' && tx[1]['block'] < $('#lastBlockHeight').text()) {
+    if(tx[1]['op'][0] == 'transfer' && tx[1]['op'][1]['from'] != bank && tx[1]['block'] < $('#lastBlockHeight').text()) {
       // only proceed if row hasn't been added yet
       if(!$("#bet"+tx[1]['block']+tx[1]['trx_in_block']).length) {
         try {
